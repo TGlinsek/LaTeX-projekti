@@ -1,0 +1,658 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[slovene]{babel}
+\usepackage{amsfonts,amssymb,amsmath, mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{dsfont}  % za font za nekatere oznake
+
+% \usepackage{semantic}  % za inference rules, type theory
+\usepackage{proof}
+
+
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Perm}{Perm}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Terms}{Terms}
+
+\newcommand{\inference}[3][]{\infer[#1]{#3}{#2}}
+
+\def\N{\mathbb{N}} % mnozica naravnih stevil
+\def\Z{\mathbb{Z}} % mnozica celih stevil
+\def\Q{\mathbb{Q}} % mnozica racionalnih stevil
+\def\R{\mathbb{R}} % mnozica realnih stevil
+\def\C{\mathbb{C}} % mnozica kompleksnih stevil
+\newcommand{\geslo}[2]{\noindent\textbf{#1} \quad \hangindent=1cm #2\\[-1pc]}
+
+\def\qed{$\hfill\Box$}   % konec dokaza
+\def\qedm{\qquad\Box}   % konec dokaza v matematičnem načinu
+\newtheorem{izrek}{Izrek}
+\newtheorem{trditev}{Trditev}
+\newtheorem{posledica}{Posledica}
+\newtheorem{lema}{Lema}
+\newtheorem{opomba}{Opomba}
+\newtheorem{definicija}{Definicija}
+%\theoremstyle{remark}
+\newtheorem{zgled}{Zgled}
+%\theoremstyle{plain}
+\newtheorem{domneva}{Domneva}
+
+
+\title{Nominalne množice}
+\author{Tadej Glinšek}
+\date{Marec 2026}
+
+
+
+
+
+\begin{document}
+
+\maketitle
+
+% \section{Introduction}
+
+\iffalse
+subfunction
+
+sub: X -> PA
+product of nominal sets
+
+support set - finite inters
+
+conditional independence relation
+\fi
+\iffalse
+Let \(Perm A\) be a group of all finite permutations on \(A\). We will primarily be dealing with \(Perm A\)-sets, which are just sets (denoted with \(X\)), equipped with the action of the group \(Perm A\), defined like this:
+\[
+    (\pi_1 \circ \pi_2) \cdot x = \pi_1 \cdot (\pi_2 \cdot x)
+\]
+\[
+    \id \cdot x = x
+\]
+\fi
+%\section{Nominal Sets}
+\iffalse
+In this chapter, we define \(X\) to be a \(\Perm A\)-set. We define the concept of \emph{support} of an element \(x \in X\) to be the set \(A \subseteq A\), such that
+
+\[
+\forall \pi \in Perm A. (\pi |_A = id  -> \pi \cdot x = x)
+\]
+
+
+Equivalently, the support of element x is the set \(A\), such that
+\[
+    \forall a_1, a_2 \in A - A . (a_1 a_2) \cdot x = x
+\]
+where \((a_1 a_2) \in Perm A\) is the transposition of two elements \(a_1, a_2 \in A\).
+
+
+We immediately notice that if \(A\) is a support of \(x\), then for every \(A \subseteq B\), it holds that \(B\) is also the support of \(x\).
+
+We will especially be interested in elements of \(X\) which have a finite support.
+
+Let \(X\) be a \(Perm A\)-set such that every element \(x\) has a finite support. Then, we say that \(X\) is a nominal set.
+
+We shall now prove some basic facts about 
+\fi
+\section{Predznanje}
+Najprej uvedimo potrebno predznanje, ki ga bomo potrebovali pri obravnavi. 
+
+V poglavju bomo z \(G\) označevali grupo, ki je definirana kot množica z binarno operacijo, ki je asociativna, ima enoto in je inverzibilna. Spomnimo se, kaj pomeni delovanje grupe na množico.
+\begin{definicija}
+    
+Množica \(X\) je \emph{\(G\)-množica}, če grupa \(G\) deluje na množici \(X\). Delovanje je definirano na sledeč način:
+\[
+    (g_1 \cdot g_2) \cdot x = g_1 \cdot (g_2 \cdot x)
+\]
+\[
+    e \cdot x = x,
+\]
+kjer je \(e\) enota grupe \(G\), \(g_1, g_2 \in G\) dva elementa grupe in \(x\) element množice \(X\).
+\end{definicija}
+
+Predvsem bo za nas uporabno delovanje simetrične grupe množice na množico samo.
+
+\begin{definicija}
+    Naj bo \(X\) množica. Potem s \(\Sym(X)\) označimo njeno simetrično grupo, tj. grupo vseh permutacij te množice.
+\end{definicija}
+
+Množenje permutacij v simetrični grupi je kar kompozitum permutacij. Delovanje simetrične grupe torej izgleda takole.
+
+\begin{zgled}
+Elementa \(\pi_1, \pi_2 \in \Sym(X)\) delujeta na \(X\) takole:
+\[\pi_1 \cdot \pi_2 \cdot x = \pi_1 \cdot (\pi_2(x)) = \pi_1(\pi_2(x)) = (\pi_1 \circ \pi_2)(x) = (\pi_1 \circ \pi_2) \cdot x\]
+\end{zgled}
+
+Za nas bo množica \(X\) največkrat neskončna. Ampak večinoma nas bodo zanimale permutacije, ki permutirajo le končno mnogo elementov te množice. Zato uvedimo naslednjo definicijo.
+
+\begin{definicija}
+Permutacija \(\pi \in \Sym(A)\) je \emph{končna}, če je \(\{a \in A\ |\ \pi a \neq a\}\) končna množica.
+\end{definicija}
+
+Množico končnih permutacij iz \(\Sym(A)\) označimo s \(\Perm(A)\). To je tudi grupa s podedovano operacijo kompozituma permutacij.
+
+\iffalse
+pomožne definicije
+
+Funkcija je \emph{ekvivariantna}, če lahko delujemo na domeni funkcije in se bo izhod funkcije ohranjal. Na primer: če je domena funkcije \(\Perm A\)-množica, potem je taka funkcija ekvivariantna, če velja \(f(x) = f(\pi \cdot x)\) za vsak \(x\) iz domene in vsak \(\pi \in \Perm A\). 
+
+Primer take funkcije je funkcija \emph{swap}, \(A \times A \times X \rightarrow X\), ki sprejme dva elementa \(a, a' \in A\) in element \(x \in X\), ki ga preslika v \((a, a') \cdot x\). Da je to smiselno, moramo predpostaviti, da je \(X\) \(\Perm A\)-množica. \(A\) je tudi \(\Perm A\)-množica, saj permutacije iz \(\Perm A\) delujejo na \(A\) na naraven način. Prav tako \(\Perm A\) deluje na \(A \times A \times X\) na naraven način.
+\fi
+\section{Nominalne množice}
+
+V tem poglavju bomo z \(\mathds{A}\) označili števno neskončno množico elementov, ki jim pravimo \emph{atomska imena} (oz. \emph{atomi}).
+Prav tako bo v tem poglavju \(X\) vedno \(\Perm \mathds{A}\)-množica.
+
+\emph{Nosilec} (angl. \emph{support}) elementa \(x \in X\) definiramo kot množico \(A \subseteq \mathds{A}\), za katero velja, da za vsak \(\pi \in \Perm \mathds{A}\) velja, da če \(\pi\) fiksira vsak \(a \in A\), potem \(\pi\) stabilizira \(x\). Z drugimi besedami, \(A\) je nosilec \(x\)-a, če:
+\[
+    \forall \pi \in \Perm \mathds{A}.\ (\forall a \in A.\ \pi\ a = a) \Rightarrow \pi \cdot x = x
+\]
+
+Nosilec elementa \(x\) označimo \(\supp(x)\).
+
+Zakaj smo za množico elementov, za katere velja, da če so ti fiksirani je fiksiran tudi \(x \in X\), izbrali ime \emph{nosilec}? Razlog je v tem, da kako se ti elementi obnašajo, to določa, kaj se zgodi z \(x\). Elementi so tako kot ogrodje: dokler se ogrodje ne spremeni, se tudi \(x\) ne more spremeniti. Nosilec torej določa vse kar je pomembno za \(x\). V tem smislu se pojem nosilca ne razlikuje preveč od pojma nosilca pri funkcijah, kjer nosilec sestavlja podmnožico domene, kjer vrednost funkcije ni ničelna.
+
+\iffalse
+ (ekvivalentno, \(A\) je nosilec \(x\), če in samo če vsaka permutacija v \(\Perm \mathds{A}\), ki fiksira elemente \(A\)-ja, stabilizira \(x\)).
+\fi  % lahko tudi tako zapišeš definicijo nosilca
+
+Obstaja naslednja karakterizacija nosilca:
+
+\begin{trditev}
+    Množica \(A \subseteq \mathds{A}\) je nosilec za \(x \in X\) natanko tedaj, ko 
+    \[
+        \forall a,\ a' \in \mathds{A}\setminus A.\ (a\ a') \cdot x = x
+    \]
+\end{trditev}
+
+\noindent
+{\em Dokaz:\/} Zaenkrat dokaz opustimo, povejmo samo idejo:
+
+Če transpozicije stabilizirajo \(x\), potem tudi produkt le-teh stabilizira \(x\). Vsaka končna permutacija se lahko zapiše kot produkt transpozicij. Permutacija, ki je produkt transpozicij, ki fiksirajo elemente iz \(A\), bo prav tako fiksirala elemente iz \(A\).    \qed
+
+\begin{opomba}
+    Nosilec elementa \(x\) si lahko predstavljamo kot množico vseh \(a\), ki delujejo na \(x\) na netrivialen način (tj., niso v njegovem stabilizatorju).
+\end{opomba}
+
+\begin{zgled}
+    Vsak \(B \supseteq A\), kjer je \(A\) nosilec elementa \(x\), je spet nosilec elementa \(x\).
+\end{zgled}
+
+\begin{definicija}
+    Če za element \(x \in X\) obstaja nosilec \(A\), ki je končna množica, potem je \(x\) \emph{končno podprt} (angl. \emph{finitely supported}).
+\end{definicija}
+
+Predpostavimo, da ima \(x\) dva nosilca \(A\) in \(A'\), tako da \(A\, \cup\, A'\) ne pokrije celotnega \(\mathds{A}\) (tj. \(\mathds{A} \setminus (A\, \cup\, A')\) je neprazen). Potem se izkaže, da je \(A\, \cap\, A'\) prav tako nosilec \(x\).
+
+\noindent
+{\em Dokaz:\/}
+Dokazujemo
+    \[
+        \forall a,\ a' \in \mathds{A}\setminus (A\, \cap\, A').\ (a\ a') \cdot x = x
+    \]
+
+Če sta \(a\) in \(a'\) oba iz \(\mathds{A}\setminus A\), potem \((a \ a') \cdot x = x\), saj je \(A\) nosilec. Analogno sklepamo, če sta \(a\) in \(a'\) oba iz \(\mathds{A}\setminus A'\).  % dejansko tega ne rabimo, saj argument deluje v splošnem
+Sicer predpostavimo (BŠS) \(a \in \mathds{A}\setminus A\) in \(a' \in \mathds{A}\setminus A'\), velja pa naj tudi \(a, a' \notin (\mathds{A} \setminus A)\, \cap\, (\mathds{A} \setminus A')\). V posebnem velja \(a \neq a'\).
+
+Velja \(\mathds{A}\setminus (A\, \cap\, A') = (\mathds{A} \setminus A)\, \cup\, (\mathds{A} \setminus A')\).
+Prav tako \(\mathds{A} \setminus (A\, \cup\, A') = (\mathds{A} \setminus A)\, \cap\, (\mathds{A} \setminus A') \), kar pa po predpostavki ni prazna množica.
+Izberimo \(a'' \in (\mathds{A} \setminus A)\, \cap\, (\mathds{A} \setminus A')\).
+Velja \(a \neq a'' \neq a'\), namreč če bi katerakoli izmed enakosti veljala, potem bi vsaj eden izmed \(a\) in \(a'\) bil v \((\mathds{A} \setminus A)\, \cap\, (\mathds{A} \setminus A')\), kar pa je v protislovju s predpostavko.
+
+Ker sta \(a, a''\) oba iz \(\mathds{A} \setminus A\), velja \((a \ a'') \cdot x = x\). Podobno, ker sta \(a', a''\) oba iz \(\mathds{A} \setminus A'\), velja \((a' \ a'') \cdot x = x\).
+
+S pomočjo \(a''\) lahko \(a\) in \(a'\) zamenjamo na sledeč način:
+\[(a \ a') = (a \ a'') \circ (a' \ a'') \circ (a \ a'')\]
+
+Torej velja \((a \ a') \cdot x = x\). \qed
+
+\begin{posledica}
+    Če sta \(A \subseteq \mathds{A}\) in \(A' \subseteq \mathds{A}\) končna nosilca elementa \(x\), je tudi \(A\, \cap\, A'\) nosilec elementa \(x\).
+\end{posledica}
+
+\begin{definicija}
+    \emph{Nominalna množica} je \(\Perm\mathds{A}\)-množica, katere vsak element ima končen nosilec.
+\end{definicija}
+
+Delovanje grupe \(\Perm\mathds{A}\) na množici je lahko poljubno; odvisno, kako ga definiramo.
+
+Alternativno lahko na nosilec gledamo na sledeč način. 
+Nominalni množici \(X\) lahko priredimo preslikavo \(\supp: X \rightarrow \mathcal{P}_{\text{fin}} \mathds{A}\), kjer je \(\mathcal{P}_{\text{fin}} \mathds{A}\) množica vseh končnih podmnožic \(\mathds{A}\).
+
+\subsection{Relacije}
+
+Definirajmo relacijo \(\sim\ \subseteq X \times X\):
+\[
+    x \sim y :\Longleftrightarrow \exists \pi \in \Perm \mathds{A}. \pi \cdot x = y
+\]
+Z drugimi besedami: \(x \sim y\), če sta v isti orbiti delovanja grupe \(\Perm \mathds{A}\) na \(X\). Tej relaciji pravimo \emph{ekvivalenčna relacija enakosti orbit}. Ta relacija je tudi nominalna množica kot množica parov elementov, ki so si v relaciji.
+
+
+Naj bo zdaj \(Y\) še ena nominalna množica.
+Definirajmo relacijo \(\# \subseteq X \times Y\):
+\[
+    x \ \#\ y :\Longleftrightarrow \supp(x) \cap \supp(y) = \emptyset
+\]
+Tej relaciji bomo pravili \emph{ločljivostna relacija} (angl. separatedness relation). Ta relacija je spet nominalna množica sama po sebi.
+
+
+Definiramo lahko še "pogojno" obliko te relacije. Naj bo \(Z\) še ena nominalna množica. Relacija \((\_)\ \#\ (\_)\ \vert\ (\_) \subseteq X \times Y \times Z\):
+\[
+    x \ \#\  y \ \vert \ z :\Longleftrightarrow \supp(x) \cap \supp(y) \subseteq \supp(z)
+\]
+Tej relaciji lahko pravimo \emph{odvisna ločljivostna relacija} (angl. relative separatedness relation).
+
+\subsection{Lastnosti relacij}
+
+\begin{trditev}
+    Naj bosta \(X\) in \(Y \subseteq X\) nominalni množici. Naj \(x \in X\) in \(y \in Y\). Potem \(x \sim y \Rightarrow x \in Y\).
+\end{trditev}
+
+\begin{trditev}
+    Naj bodo \(X, Y, Z, W\) nominalne množice, \(x, y, z, w\) pa njihovi elementi. Potem velja:
+    \[
+        x \ \#\  (y, z) \ \vert\  w \Longleftrightarrow x \ \#\  y \ \vert\  (z, w)
+    \]
+    kjer leva stran živi v \(X \times (Y \times Z) \times W\) in desna stran živi v \(X \times Y \times (Z \times W)\).
+\end{trditev}
+
+\begin{trditev}
+    Za vsaka \(x, y \in X\) obstaja \(z \in X\), da velja \(z \ \#\  x\) in \(z \sim y\).
+\end{trditev}
+
+\begin{trditev}
+    Za vsako trojico \(x, y, w \in X\) obstaja \(z \in X\), da velja \(z \ \#\  x\ \ \vert\ \ w\) in \(z \sim y\ \ \vert\ \ w\).
+\end{trditev}
+
+Dokaze zaenkrat opustimo.
+
+Naslednja trditev nam bo prišla prav:
+\begin{trditev}
+    \[
+    x \ \#\  y \ \vert\  z, w \wedge x \ \#\  z \ \vert\  w \Longleftrightarrow x \ \#\  y, z \ \vert\  w
+    \]
+\end{trditev}
+
+Implikacijo v desno smer bomo označili z \(1\), implikacijo v levo smer pa z \(2\) če nas bo zanimala formula, ki je levo od konjunkcije. Če nas zanima formula desno od konjunkcije (pri implikaciji v levo), bomo označili \((3)\).
+
+\section{Netipiziran lambda račun}
+
+Množico izrazov v netipiziranem lambda računu označujemo z \(\Lambda\). Definirani so s pravili:
+\[
+    t \in \Lambda ::= a \ | \ \lambda a.t\ |\ t\ t
+\]
+kjer je \(a \in \mathds{A}\).
+
+Ideja je, da izrazov ne ločujemo tako strogo, kot jih ločuje običajna enakost. Namreč, \(\Perm \mathds{A}\) lahko na izraze deluje, tako da med sabo permutira elemente \(\mathds{A}\) (atome), ki se v izrazih pojavijo. Permutiranje atomov ne spremeni vsebine izrazov, zato tudi take izraze ne bomo ločevali.
+
+Z \(\Gamma\) bomo označevali končno zaporedje atomov iz \(\mathds{A}\). To predstavlja kontekst prostih spremenljivk, ki se pojavi v naših izrazih (angl. terms). Torej izraze bomo pisali z eksplicitnim kontekstom, npr. \(\Gamma, y, z \vdash \lambda x.xy\)
+
+Naj bo \(\sim\) ekvivalenčna relacija, ki enači izraze oblike \(\Gamma \vdash M\), ki so v isti orbiti glede na delovanje grupe \(\Perm{\mathds{A}}\). Informalno, ko permutacija deluje na izraz, permutira spremenljivke, ki se pojavijo v tem izrazu in kontekstu, kjer izraz živi. Kontekst je namreč zaporedje elementov množice \(\mathds{A}\). 
+
+Sedaj definiramo relacijo \(\equiv_{\alpha}^\Gamma\), ki je relacija med izrazi nad istim kontekstom. Natančneje, ta relacija je relacija na množici 
+\[
+    \Terms_{\Gamma} := \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}.
+\]
+To je množica izrazov nad istim kontekstom \(\Gamma\).
+
+Tej ekvivalenci pravimo \emph{\(\alpha\)-ekvivalenca}. Namesto \(\Lambda\) se bomo torej pogosto osredotočili na \(\Lambda/\equiv_{\alpha}\).
+
+
+
+
+% Izraze generiramo z naslednjimi pravili TODO
+
+
+
+Množica vseh izrazov je nominalna množica:
+
+\[
+    \Terms := \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}
+\]
+
+
+\iffalse
+to je v redu, sam je treba bolj elegantno uvesti v tekstu
+
+Zdaj lahko uvedemo družino relacij
+\[
+    \{\equiv_{\alpha}^{\Gamma}\}_\Gamma
+\]
+kjer \(\equiv_{\alpha}^{\Gamma} \subseteq \Terms_{\Gamma} \times \Terms_{\Gamma}\).
+\fi
+
+
+\iffalse
+Lambda
+Lambda/alphaequiv
+
+alpha equivalence
+
+4. poglavje: lambda calc
+
+----
+separatedness - razdelitvenost
+
+# - is the same as coproduct symbol
+
+joint distribution - skupna
+
+
+
+\fi
+
+
+\begin{definicija}
+    \emph{Kontekst} \(\Gamma\) je končno zaporedje paroma različnih atomov.        
+\end{definicija}
+
+Iz \(\lambda\)-računa vemo, kako so definirani izrazi \(M\), če predpostavimo nek konstekst \(\Gamma\). Mi se bomo tega lotili drugače: \(\lambda\)-izraze bomo definirali skupaj s kontekstom.
+
+\begin{definicija}
+    \(\lambda\)-izraz v kontekstu \(\Gamma \vdash M\) je definiran z naslednjimi pravili:
+    \[
+        \inference[(x \in \Gamma)]{}{\Gamma \vdash x}
+    \]
+    \[
+        \inference{\Gamma \vdash M \quad \Gamma \vdash N}{\Gamma \vdash M N}
+    \]
+    \[
+        \inference[(x \notin \Gamma)]{\Gamma, x \vdash M}{\Gamma \vdash \lambda x. M}    
+    \]
+\end{definicija}
+
+\begin{opomba}
+    Če se \(x\) pojavi v \(\Gamma \vdash M\), potem se ne more pojaviti kot prosta in vezana spremenljivka hkrati.
+\end{opomba}
+
+\iffalse
+Uvedimo pojem substitucije.
+
+\begin{definicija}
+    Naj bosta \(\Gamma, x, \Gamma' \vdash M\) in \(\Gamma, \Gamma' \vdash N\) \(\lambda\)-izraza, tako da velja \[N \ \#\  (M, x) \ \vert\  \Gamma, \Gamma'.\] Potem definiramo \(\Gamma, \Gamma' \vdash M[N/x]\) kot
+    \[
+        z[N/x] := ...
+    \]
+    
+\end{definicija}
+
+Opomba: pri tem velja \(\supp((M, x)) = \supp(M) \cup \{x\}\), kar sledi iz definicije produkta nominalnih množic.
+
+Opomba: \(\Gamma, \Gamma'\) je stik dveh kontekstov - stik dveh zaporedij.
+
+Opomba: \(\supp(\Gamma)\) je kaj točno? to je v bistvu množica, ki jo dobimo iz zaporedja gama
+
+\begin{trditev}
+    Izraz \(\Gamma, \Gamma' \vdash M[N/x]\) je izraz v kontekstu. (tj., lahko ga kreiramo s tistimi indukcijskimi pravili)
+\end{trditev}
+
+to trditev lahko zbrišeš, ker že mamo spodaj.
+
+\noindent
+{\em Dokaz:\/}
+Če M enak z:
+
+    Če z enak x:
+    \[
+    \Gamma, \Gamma' \vdash M[N/x] -> \Gamma, \Gamma' \vdash N
+    \] kar po predpostavki obstaja
+    
+    Če ni:
+    \[
+    \Gamma, \Gamma' \vdash M[N/x] -> \Gamma, \Gamma' \vdash z
+    \]. Velja \(\Gamma, x, \Gamma' \vdash z\) po predpostavki, torej to štima. (basically isti sklep kot prej).
+
+Če M enak \(M' M''\):
+\[
+\Gamma, \Gamma' \vdash M[N/x] -> \Gamma, \Gamma' \vdash M'[N/x] M''[N/x]
+\]. Po predpostavki \(\Gamma, x, \Gamma' \vdash M', M''\). Po indukcijski predpostavki velja \(\Gamma, \Gamma' \vdash M'[N/x] M''[N/x]\). Also nekje se sigurno mora uporabiti pravilo za te produkte (tj., \(\Gamma \vdash M\) in \(\Gamma \vdash N\) -> \(\Gamma \vdash MN\)).
+
+Če M enak \(\lambda z.M'\), potem
+\[
+\Gamma, \Gamma' \vdash M[N/x] -> \Gamma, \Gamma' \vdash \lambda z.(M'[N/x])
+\]. Po predpostavki velja \(\Gamma, x, \Gamma' \vdash \lambda z. M'\), iz česar sledi \(\Gamma, z, \Gamma', x? \vdash M'\). Po indukciji: \(\Gamma, \Gamma', x? \vdash M'[N/z]\)
+
+\(\Gamma + x\) oznaka za \(x\) nekje znotraj zaporedja \(Gamma\) (še vedno x ni v gami, samo pač, gamma je enaka A, B, in gama + x je pol A, x, B. torej gama samo obdaja x. gama + x je točno določen izmed več možnih takih zaporedij (nekje vmes je, ampak noben ne ve kje). če ni važen vrstni red, je ta izraz v redu, če ne pa ni v redu. torej, če večkrat napišemo gama + x, potem vedno mislimo isto (je v točno določeni poziciji), ampak če nočemo da je skos v isti poziciji, pol te notacije ne moremo uporabiti. alfa + beta ni definirano, če oboje zaporedje.)
+
+oznaka za \(gama - x\) - odstranimo \(x\) iz game. itak je kvečjemu en x. če se x ne pojavi, potem izraz ni definiran - mora biti znano, da x je v gami.
+
+\iffalse
+\section{zapiski}
+\(\Gamma \vdash M\) pomeni, da so vse proste spremenljivke iz \(M\) vsebovane v \(\Gamma\). O vezanih spremenljivkah ne vemo veliko, razen to, da niso v \(\Gamma\).
+
+\(\supp(M)\) predstavlja vse spremenljivke v izrazu \(M\) (tako proste, kot vezane).
+
+\(\supp(\Gamma)\) je v bistvu množica elementov zaporedja \(\Gamma\). Ta množica je tako velika, kot je zaporedje dolgo (elementi se ne ponavljajo).
+
+\(\supp(x) = \{x\}\)
+
+\(\supp(MN) = \supp(M) \cup \supp(N)\)
+
+\(\supp(\lambda x.M) = \{x\} \cup \supp(M)\)
+\fi
+
+\section{zdaj pa zares}
+\fi
+
+Uvedimo pojem substitucije.
+
+\begin{definicija}
+    Naj bosta \(\Gamma, x, \Gamma' \vdash M\) in \(\Gamma, \Gamma' \vdash N\) \(\lambda\)-izraza, tako da velja \[N \ \#\  M \ \vert\  \Gamma, \Gamma'.\] Potem definiramo \(\Gamma, \Gamma' \vdash M[N/x]\) kot
+    
+    \[z[N/x] := \begin{cases*}
+    N & če z = x,\\
+    z & sicer,
+    \end{cases*}
+    \]
+    \[
+        (M' M'')[N/x] := M'[N/x] M''[N/x],
+    \]
+    \[
+        (\lambda z. M') [N/x] := \lambda z. (M' [N/x]).
+    \]
+    
+    
+\end{definicija}
+\iffalse
+Opomba: pri tem velja \(\supp((M, x)) = \supp(M) \cup \{x\}\), kar sledi iz definicije produkta nominalnih množic.
+
+Opomba: \(\Gamma,\ \Gamma'\) je stik dveh kontekstov - stik dveh zaporedij.
+\fi
+\begin{izrek}
+    Izraz \(M[N/x]\) je izraz induciran s kontekstom \(\Gamma,\ \Gamma'\), tj., \(\Gamma,\ \Gamma' \vdash M[N/x]\).
+\end{izrek}
+
+Izrek pravi, da je ob določenih predpostavkah substitucija dobro definiran \(\lambda\)-izraz.
+Za dokaz bomo potrebovali naslednjo lemo:
+
+\begin{lema}
+    Naj \(\Gamma \vdash M\) \(\lambda\)-izraz, \(z\) spremenljivka, in naj velja \(z \ \#\  M,\ \Gamma\). Potem velja \[
+        \Gamma,\ z \vdash M.
+    \]
+\end{lema}
+
+\noindent
+{\em Dokaz:\/}
+
+Naj \(M\) izraz v kontekstu \(\Gamma\). Naj \(z\) spremenljivka, tako da \(z \ \#\  M\) in \(z \notin \Gamma\).
+
+\begin{itemize}
+    \item Recimo, da \(M = x\), kjer je \(x\) neka spremenljivka. Velja \(x \neq z\), saj velja \(z \ \#\  M\). Iz \(\Gamma \vdash M\) sledi \(x \in \Gamma\), torej \(x \in \Gamma,\ z\). Posledično, skupaj z dejstvom da \(z \notin \Gamma\), velja \(\Gamma,\ z \vdash M\).
+
+    \item Recimo, da \(M = M'M''\). Sledi \(\Gamma \vdash M'\) in \(\Gamma \vdash M''\). Iz \(z \ \#\  M\) sledi \(z \ \#\  M'\) in \(z \ \#\  M''\). Potem so izpolnjeni pogoji za trditev za \(M'\) in \(M''\), torej velja \(\Gamma,\ z \vdash M'\) in \(\Gamma,\ z \vdash M''\). Torej \(\Gamma,\ z \vdash M'M''\), kar smo želeli dokazati.
+
+    \item Recimo, da \(M = \lambda x. M'\). Potem \(\Gamma,\ x \vdash M'\). Iz \(z \ \#\  \lambda x. M'\) sledi \(z \ \#\  M'\) in \(x \neq z\). Torej lahko uporabimo indukcijsko predpostavko in dobimo \(\Gamma,\ x,\ z \vdash M'\). Sledi \(\Gamma,\ z \vdash \lambda x. M'\).
+\end{itemize}
+
+\qed
+
+Sedaj lahko dokažemo izrek:
+
+\noindent
+{\em Dokaz izreka:\/}
+
+Predpostavimo \(\Gamma,\ x,\ \Gamma' \vdash M\),\ \ \ \(\Gamma,\ \Gamma' \vdash N\) in \(N \ \#\  M \ \vert\  \Gamma,\ \Gamma'\).
+
+Dokazujemo \(\Gamma,\ \Gamma' \vdash M[N/x]\), torej, da je \(M[N/x]\) izraz v kontekstu \(\Gamma\).
+
+\begin{itemize}
+\item Predpostavimo najprej \(M = x\). Potem sledi \(M[N/x] = N\), po definiciji substitucije. Iz \(\Gamma,\ \Gamma' \vdash N\) torej sledi \(M[N/x]\) v kontekstu \(\Gamma,\ \Gamma'\).
+
+\item Predpostavimo zdaj \(M = z\), kjer je \(z \neq x\) spremenljivka. Potem je \(M[N/x] = z\), po definiciji substitucije. Iz predpostavke \(\Gamma,\ x,\ \Gamma' \vdash M\) sledi \(z \in \Gamma,\ \Gamma'\) in torej \(\Gamma,\ \Gamma' \vdash z\).
+
+\item Predpostavimo \(M = M' M''\). Iz predpostavke \(\Gamma,\ x,\ \Gamma' \vdash M\) sledi \(\Gamma,\ x,\ \Gamma' \vdash M'\) in \(\Gamma,\ x,\ \Gamma' \vdash M''\). Po indukcijski predpostavki velja \(\Gamma,\ \Gamma' \vdash M'[N/x]\) in \(\Gamma,\ \Gamma' \vdash M''[N/x]\). Sledi \(\Gamma,\ \Gamma' \vdash M'[N/x] M''[N/x]\) po pravilih za generiranje izrazov. Po definiciji substitucije sledi \(\Gamma,\ \Gamma' \vdash (M' M'')[N/x]\), torej smo dokazali \(\Gamma,\ \Gamma' \vdash M[N/x]\).
+
+\item Predpostavimo \(M = \lambda z. M'\). Po predpostavki velja \(\Gamma,\ x,\ \Gamma' \vdash \lambda z. M'\). Velja \(z \notin \Gamma,\ x,\ \Gamma'\). Po pravilu za generiranje \(\lambda\)-izrazov sledi \(\Gamma,\ x,\ \Gamma',\ z \vdash M'\).
+
+Najprej izpeljimo pogoj \(z \ \#\  \Gamma,\ \Gamma',\ N\).
+
+Velja \(M \ \#\  N \ \vert\  \Gamma,\ \Gamma'\), torej \(\lambda z. M' \ \#\  N \ \vert\  \Gamma,\ \Gamma'\), torej \(z,\ M' \ \#\  N \ \vert\  \Gamma,\ \Gamma'\).
+
+Sledi \(z \ \#\  N \ \vert\  \Gamma,\ \Gamma'\), po pravilu za manipuliranje ločljivostne relacije \((3)\). Sledi \(z \ \#\  N,\ \Gamma,\ \Gamma'\) (po \((1)\)), kar smo želeli dokazati (operacija \(\_,\_\) je komutativna).
+
+Podobno lahko iz \(z,\ M' \ \#\  N \ \vert\  \Gamma,\ \Gamma'\) izpeljemo \(M' \ \#\  N \ \vert\  \Gamma,\ \Gamma',\ z\) (po \((2)\)).
+
+Ker velja \(z \ \#\  \Gamma,\ \Gamma',\ N\), lahko na predpostavki \(\Gamma,\ \Gamma' \vdash N\) uporabimo lemo, da dobimo \(\Gamma,\ \Gamma',\ z \vdash N\).
+
+Z uporabo dejstev \(\Gamma,\ x,\ \Gamma',\ z \vdash M'\),\ \ \  \(\Gamma,\ \Gamma',\ z \vdash N\),\ \ \ \(M' \ \#\  N \ \vert\  \Gamma,\ \Gamma',\ z\) sledi po indukcijski predpostavki \(\Gamma,\ \Gamma',\ z \vdash M'[N/x]\). Torej sledi \(\Gamma,\ \Gamma' \vdash \lambda z. (M'[N/x])\) in \(\Gamma,\ \Gamma' \vdash M[N/x]\). \qed
+
+\end{itemize}
+
+\begin{opomba}
+    \(x \ \#\  y \ \vert\  z\), kjer \(z\) prazno zaporedje, je ekvivalentno \(x \ \#\  y\).
+\end{opomba}
+
+\begin{opomba}
+    Ker so atomi v zaporedjih, ki predstavljajo kontekst za \(\lambda\)-izraze, enolični (se ne ponavljajo), nesmiselnih izrazov ne moremo skonstruirati, npr. \(\lambda x.(\lambda x.x)\). Lahko pa definiramo izraze kot so \((\lambda x.x)(\lambda x.x)\).
+\end{opomba}
+
+\subsection{Permutiranje atomov v lambda izrazih}
+
+\begin{opomba}
+    Naj bo \(\Gamma = a_1,\, a_2,\ \ldots, \ a_n\) končno zaporedje elementov iz \(\mathds{A}\). Permutacija \(\pi \in \mathds{A}\) slika zaporedje \(\Gamma\) v \(\pi(a_1), \ , \pi(a_2), \ , \ldots, \ \pi(a_n)\), tj. preslikamo vsak atom posebej.
+\end{opomba}
+
+
+
+Množica vseh izrazov oblike \(\Gamma \vdash M\) je nominalna množica. Opišimo, kako permutacije delujejo na te izraze:
+
+\begin{definicija}
+    Delovanje grupe \(\Perm{\mathds{A}}\) na množico izrazov je definirano sledeče:
+    \[
+        \pi(\Gamma \vdash x) := \pi(\Gamma) \vdash \pi(x)
+    \]
+    \[
+        \pi(\Gamma \vdash MM') := \pi(\Gamma ) \vdash \pi(M)\pi(M')
+    \]
+    \[
+        \pi(\Gamma \vdash \lambda x. M) := \pi(\Gamma) \vdash \lambda \pi(x). \pi(M)
+    \]
+\end{definicija}
+
+Opomba: včasih bomo kontekst spustili. Takrat \(\pi(M)\) pač predstavlja izraz \(M'\) v \(\pi(\Gamma \vdash M) = \Gamma' \vdash M'\).
+
+\begin{opomba}
+    Izraz \(\pi(\Gamma) \vdash \lambda \pi(x). \pi(M)\) je dobro definiran, saj se \(\pi(x)\) ne more pojaviti v \(\pi(\Gamma)\), če se \(x\) ne pojavi v \(\Gamma\).
+\end{opomba}
+
+\begin{opomba}
+    Posledično velja, da \(\pi(\supp(M)) = \supp(\pi(M))\).
+\end{opomba}
+
+Opomba: \(\pi\) od para je definiran po elementih (sledi iz definicije produkta nominalnih množic).
+
+Spomnimo se sedaj relacije \emph{orbitne ekvivalence}: za dva izraza \(\Gamma \vdash M\) in \(\Gamma' \vdash N\) velja \(\Gamma \vdash M \sim \Gamma' \vdash N\) (pišemo tudi \(M, \Gamma \sim N, \Gamma'\)), kadar obstaja \(\pi \in \Perm{\mathds{A}}\), da \(\pi(\Gamma \vdash M) = \Gamma' \vdash N\) oz. alternativno \(\pi(M, \Gamma) = N, \Gamma'\). Če velja \(\Gamma = \Gamma'\), potem lahko pišemo \(\Gamma \vdash M \sim N\) ali pa \(M \sim N | \Gamma\).
+
+Opomba: \(\pi(\Gamma) = \Gamma'\) pomeni, da sta obe zaporedji iste dolžine in da se \(i\)-ti člen zaporedja \(\Gamma\) slika v \(i\)-ti člen zaporedja \(\Gamma'\). Torej, \(\Gamma \sim \Gamma'\) pomeni, da za vsako mesto v zaporedju imamo isto permutacijo \(\pi\): ne more \(\pi\) biti odvisna od \(i\), kjer \(i\) pomeni indeks člena v zaporedju. Na nek način imamo joint distribution.
+
+\subsection{Alfa ekvivalenca}
+
+Zanimalo nas bo, kdaj sta dva izraza ekvivalentna v nekem smislu: želimo, uvesti ekvivalenco izrazov, ki pove, kdaj sta izraza enaka po pomenu. Natančneje, želimo, da sta dva izraza ekvivalentna, če lahko enega dobimo iz drugega le s preimenovanjem vezanih spremenljivk. Tej ekvivalenci pravimo alfa ekvivalenca.
+
+\begin{definicija}
+    Relacija \(\equiv_\alpha\) je definirana s sledečimi pravili:
+    \[
+        \inference[]{}{\Gamma, x, \Gamma' \vdash x \equiv_\alpha x}
+    \]
+    \[
+        \inference{\Gamma \vdash M \equiv_\alpha M' \quad \Gamma \vdash N \equiv_\alpha N'}{\Gamma \vdash MN \equiv_\alpha M'N'}
+    \]
+    \[
+        \inference{\Gamma, x \vdash M \equiv_\alpha N}{\Gamma \vdash \lambda x.M \equiv_\alpha \lambda x.N}
+    \]
+    \[
+        \inference{\Gamma \vdash M \quad \Gamma \vdash N \quad M \sim N | \Gamma}{\Gamma \vdash M \equiv_\alpha N}
+    \]
+    Če za dva izraza velja \(\Gamma \vdash M \equiv_\alpha N\), potem rečemo, da sta izraza \emph{alfa-ekvivalentna}.
+\end{definicija}
+Opomba: \(\equiv_\alpha\) je kontekstualizirana kongruenčna relacija.
+
+Opomba: iz produkcijskih pravil je razvidno, da sta dva izraza lahko alfa-ekvivalentna le, če ju opazujemo nad istim kontekstom.
+
+Opomba: relacija \(\equiv_\alpha\) vsebuje kontekstualizirano orbitno ekvivalenco (tj. relacijo \(\sim\)).
+
+Pri zadnjem pravilu velja omeniti naslednjo lastnost.
+
+\begin{trditev}
+    Naj \(\Gamma \vdash M\) izraz nad kontekstom \(\Gamma\) in naj bo še \(N\) en drug izraz, tako da velja \(M \sim N | \Gamma\). Potem velja \(\Gamma \vdash N\), tj. izraz \(N\) živi v kontekstu \(\Gamma\).
+\end{trditev}
+
+\noindent
+{\em Dokaz:\/}
+Pogoj \(M \sim N | \Gamma\) implicira obstoj permutacije \(\pi\), ki fiksira člene zaporedja \(\Gamma\) in da velja \(\pi(M) = N\). Sledi \(\pi(\Gamma \vdash M) = \pi(\Gamma) \vdash \pi(M) = \Gamma \vdash N\).
+\qed
+
+Opomba pravi, da če permutiramo samo vezane spremenljivke, se kontekst ne spremeni. To je seveda povsem smiselno, namreč kontekst sestavljajo le proste spremenljivke, ne vezane.
+
+\subsection{Beta redukcija}
+
+Najprej formulirajmo lemo, ki velja za splošne nominalne množice.
+
+\begin{lema}
+    Naj \(A, B\ \text{in}\ C\) nominalne množice, \(a, b, c\) pa elementi vsak svoje množice izmed teh. Potem obstaja \(b'\), tako da \(b' \sim b | c\) in \(b' \# a | c\).
+\end{lema}
+\noindent
+{\em Dokaz:\/} TODO - ne razumem še formulacije tega, niti kako se bo ta lema kasneje uporabljala. \qed
+
+Sedaj definiramo relacijo \(\beta\)-redukcije. To je funkcijska relacija, ki poveže lambda izraz z lambda izrazom, v katerega se prvotni izraz poenostavi.
+
+\begin{definicija}
+    Relacija \(\beta\)-redukcija (označimo z \(\rightarrow_\beta\)) je definirana s sledečimi pravili:
+    \[
+        \inference{}{\Gamma, x, \Gamma' \vdash x \rightarrow_\beta x}
+    \]
+    \[
+        \inference{\Gamma \vdash M \rightarrow_\beta M' \quad \Gamma \vdash N}{\Gamma \vdash MN \rightarrow_\beta M'N}
+    \]
+    \[
+        \inference{\Gamma \vdash N \rightarrow_\beta N' \quad \Gamma \vdash M}{\Gamma \vdash MN \rightarrow_\beta MN'}
+    \]
+    \[
+        \inference{\Gamma, x \vdash M \rightarrow_\beta M'}{\Gamma \vdash \lambda x.M \rightarrow_\beta \lambda x.M'}
+    \]
+    \[
+        \inference{\Gamma, x \vdash M \quad \Gamma \vdash N \quad N' \sim N | \Gamma \quad M \# N' | \Gamma}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta M[N'/x]}
+    \]
+\end{definicija}
+
+Naslednja lema bo osrednjega pomena
+
+\begin{lema}
+    Naj \(\Gamma \vdash M \rightarrow_\beta M'\) in naj
+    \begin{enumerate}
+        \item \(M \sim N | \Gamma\), oz.
+        \item \(\Gamma \vdash M \equiv_\alpha N\)
+    \end{enumerate}
+    Potem velja, da
+    \begin{enumerate}
+        \item obstaja \(N'\), da \(M' \sim N' | \Gamma\) in \(\Gamma \vdash N \rightarrow_\beta N'\), oz.
+        \item obstaja \(N'\), da \(\Gamma \vdash M' \equiv_\alpha N' \) in \(\Gamma \vdash N \rightarrow_\beta N'\)
+    \end{enumerate}
+\end{lema}
+To je torej v bistvu več lem (štiri so) naenkrat. Bomo videli, katere je lažje najprej dokazati oz. katere sploh držijo.
+
+\end{document}
+
