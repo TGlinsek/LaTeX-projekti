@@ -55,49 +55,9 @@
 
 % \section{Introduction}
 
-\iffalse
-subfunction
 
-sub: X -> PA
-product of nominal sets
-
-support set - finite inters
-
-conditional independence relation
-\fi
-\iffalse
-Let \(Perm A\) be a group of all finite permutations on \(A\). We will primarily be dealing with \(Perm A\)-sets, which are just sets (denoted with \(X\)), equipped with the action of the group \(Perm A\), defined like this:
-\[
-    (\pi_1 \circ \pi_2) \cdot x = \pi_1 \cdot (\pi_2 \cdot x)
-\]
-\[
-    \id \cdot x = x
-\]
-\fi
 %\section{Nominal Sets}
-\iffalse
-In this chapter, we define \(X\) to be a \(\Perm A\)-set. We define the concept of \emph{support} of an element \(x \in X\) to be the set \(A \subseteq A\), such that
 
-\[
-\forall \pi \in Perm A. (\pi |_A = id  -> \pi \cdot x = x)
-\]
-
-
-Equivalently, the support of element x is the set \(A\), such that
-\[
-    \forall a_1,\ a_2 \in A - A . (a_1 a_2) \cdot x = x
-\]
-where \((a_1 a_2) \in Perm A\) is the transposition of two elements \(a_1,\ a_2 \in A\).
-
-
-We immediately notice that if \(A\) is a support of \(x\), then for every \(A \subseteq B\), it holds that \(B\) is also the support of \(x\).
-
-We will especially be interested in elements of \(X\) which have a finite support.
-
-Let \(X\) be a \(Perm A\)-set such that every element \(x\) has a finite support. Then, we say that \(X\) is a nominal set.
-
-We shall now prove some basic facts about 
-\fi
 \section{Predznanje}
 Najprej uvedimo potrebno predznanje, ki ga bomo potrebovali pri obravnavi. 
 
@@ -135,13 +95,7 @@ Permutacija \(\pi \in \Sym(A)\) je \emph{končna}, če je \(\{a \in A\ |\ \pi a 
 
 Množico končnih permutacij iz \(\Sym(A)\) označimo s \(\Perm(A)\). To je tudi grupa s podedovano operacijo kompozituma permutacij.
 
-\iffalse
-pomožne definicije
 
-Funkcija je \emph{ekvivariantna}, če lahko delujemo na domeni funkcije in se bo izhod funkcije ohranjal. Na primer: če je domena funkcije \(\Perm A\)-množica, potem je taka funkcija ekvivariantna, če velja \(f(x) = f(\pi \cdot x)\) za vsak \(x\) iz domene in vsak \(\pi \in \Perm A\). 
-
-Primer take funkcije je funkcija \emph{swap}, \(A \times A \times X \rightarrow X\), ki sprejme dva elementa \(a,\ a' \in A\) in element \(x \in X\), ki ga preslika v \((a,\ a') \cdot x\). Da je to smiselno, moramo predpostaviti, da je \(X\) \(\Perm A\)-množica. \(A\) je tudi \(\Perm A\)-množica, saj permutacije iz \(\Perm A\) delujejo na \(A\) na naraven način. Prav tako \(\Perm A\) deluje na \(A \times A \times X\) na naraven način.
-\fi
 \section{Nominalne množice}
 
 V tem poglavju bomo z \(\mathds{A}\) označili števno neskončno množico elementov, ki jim pravimo \emph{atomska imena} (oz. \emph{atomi}).
@@ -156,9 +110,6 @@ Nosilec elementa \(x\) označimo \(\supp(x)\).
 
 Zakaj smo za množico elementov, za katere velja, da če so ti fiksirani je fiksiran tudi \(x \in X\), izbrali ime \emph{nosilec}? Razlog je v tem, da kako se ti elementi obnašajo, to določa, kaj se zgodi z \(x\). Elementi so tako kot ogrodje: dokler se ogrodje ne spremeni, se tudi \(x\) ne more spremeniti. Nosilec torej določa vse kar je pomembno za \(x\). V tem smislu se pojem nosilca ne razlikuje preveč od pojma nosilca pri funkcijah, kjer nosilec sestavlja podmnožico domene, kjer vrednost funkcije ni ničelna.
 
-\iffalse
- (ekvivalentno, \(A\) je nosilec \(x\), če in samo če vsaka permutacija v \(\Perm \mathds{A}\), ki fiksira elemente \(A\)-ja, stabilizira \(x\)).
-\fi  % lahko tudi tako zapišeš definicijo nosilca
 
 Obstaja naslednja karakterizacija nosilca:
 
@@ -324,35 +275,8 @@ Množica vseh izrazov je nominalna množica:
 \]
 
 
-\iffalse
-to je v redu, sam je treba bolj elegantno uvesti v tekstu
-
-Zdaj lahko uvedemo družino relacij
-\[
-    \{\equiv_{\alpha}^{\Gamma}\}_\Gamma
-\]
-kjer \(\equiv_{\alpha}^{\Gamma} \subseteq \Terms_{\Gamma} \times \Terms_{\Gamma}\).
-\fi
 
 
-\iffalse
-Lambda
-Lambda/alphaequiv
-
-alpha equivalence
-
-4. poglavje: lambda calc
-
-----
-separatedness - razdelitvenost
-
-# - is the same as coproduct symbol
-
-joint distribution - skupna
-
-
-
-\fi
 
 
 \begin{definicija}
@@ -378,74 +302,6 @@ Iz \(\lambda\)-računa vemo, kako so definirani izrazi \(M\), če predpostavimo 
     Če se \(x\) pojavi v \(\Gamma \vdash M\), potem se ne more pojaviti kot prosta in vezana spremenljivka hkrati.
 \end{opomba}
 
-\iffalse
-Uvedimo pojem substitucije.
-
-\begin{definicija}
-    Naj bosta \(\Gamma,\ x,\ \Gamma' \vdash M\) in \(\Gamma,\ \Gamma' \vdash N\) \(\lambda\)-izraza, tako da velja \[N \ \#\  (M,\ x) \ \vert\  \Gamma,\ \Gamma'.\] Potem definiramo \(\Gamma,\ \Gamma' \vdash M[N/x]\) kot
-    \[
-        z[N/x] := ...
-    \]
-    
-\end{definicija}
-
-Opomba: pri tem velja \(\supp((M,\ x)) = \supp(M) \cup \{x\}\), kar sledi iz definicije produkta nominalnih množic.
-
-Opomba: \(\Gamma,\ \Gamma'\) je stik dveh kontekstov - stik dveh zaporedij.
-
-Opomba: \(\supp(\Gamma)\) je kaj točno? to je v bistvu množica, ki jo dobimo iz zaporedja gama
-
-\begin{trditev}
-    Izraz \(\Gamma,\ \Gamma' \vdash M[N/x]\) je izraz v kontekstu. (tj., lahko ga kreiramo s tistimi indukcijskimi pravili)
-\end{trditev}
-
-to trditev lahko zbrišeš, ker že mamo spodaj.
-
-\noindent
-{\em Dokaz:\/}
-Če M enak z:
-
-    Če z enak x:
-    \[
-    \Gamma,\ \Gamma' \vdash M[N/x] -> \Gamma,\ \Gamma' \vdash N
-    \] kar po predpostavki obstaja
-    
-    Če ni:
-    \[
-    \Gamma,\ \Gamma' \vdash M[N/x] -> \Gamma,\ \Gamma' \vdash z
-    \]. Velja \(\Gamma,\ x,\ \Gamma' \vdash z\) po predpostavki, torej to štima. (basically isti sklep kot prej).
-
-Če M enak \(M' M''\):
-\[
-\Gamma,\ \Gamma' \vdash M[N/x] -> \Gamma,\ \Gamma' \vdash M'[N/x] M''[N/x]
-\]. Po predpostavki \(\Gamma,\ x,\ \Gamma' \vdash M',\ M''\). Po indukcijski predpostavki velja \(\Gamma,\ \Gamma' \vdash M'[N/x] M''[N/x]\). Also nekje se sigurno mora uporabiti pravilo za te produkte (tj., \(\Gamma \vdash M\) in \(\Gamma \vdash N\) -> \(\Gamma \vdash MN\)).
-
-Če M enak \(\lambda z.M'\), potem
-\[
-\Gamma,\ \Gamma' \vdash M[N/x] -> \Gamma,\ \Gamma' \vdash \lambda z.(M'[N/x])
-\]. Po predpostavki velja \(\Gamma,\ x,\ \Gamma' \vdash \lambda z. M'\), iz česar sledi \(\Gamma,\ z,\ \Gamma',\ x? \vdash M'\). Po indukciji: \(\Gamma,\ \Gamma',\ x? \vdash M'[N/z]\)
-
-\(\Gamma + x\) oznaka za \(x\) nekje znotraj zaporedja \(Gamma\) (še vedno x ni v gami, samo pač, gamma je enaka A, B, in gama + x je pol A, x, B. torej gama samo obdaja x. gama + x je točno določen izmed več možnih takih zaporedij (nekje vmes je, ampak noben ne ve kje). če ni važen vrstni red, je ta izraz v redu, če ne pa ni v redu. torej, če večkrat napišemo gama + x, potem vedno mislimo isto (je v točno določeni poziciji), ampak če nočemo da je skos v isti poziciji, pol te notacije ne moremo uporabiti. alfa + beta ni definirano, če oboje zaporedje.)
-
-oznaka za \(gama - x\) - odstranimo \(x\) iz game. itak je kvečjemu en x. če se x ne pojavi, potem izraz ni definiran - mora biti znano, da x je v gami.
-
-\iffalse
-\section{zapiski}
-\(\Gamma \vdash M\) pomeni, da so vse proste spremenljivke iz \(M\) vsebovane v \(\Gamma\). O vezanih spremenljivkah ne vemo veliko, razen to, da niso v \(\Gamma\).
-
-\(\supp(M)\) predstavlja vse spremenljivke v izrazu \(M\) (tako proste, kot vezane).
-
-\(\supp(\Gamma)\) je v bistvu množica elementov zaporedja \(\Gamma\). Ta množica je tako velika, kot je zaporedje dolgo (elementi se ne ponavljajo).
-
-\(\supp(x) = \{x\}\)
-
-\(\supp(MN) = \supp(M) \cup \supp(N)\)
-
-\(\supp(\lambda x.M) = \{x\} \cup \supp(M)\)
-\fi
-
-\section{zdaj pa zares}
-\fi
 
 Uvedimo pojem substitucije.
 
@@ -466,11 +322,7 @@ Uvedimo pojem substitucije.
     
     
 \end{definicija}
-\iffalse
-Opomba: pri tem velja \(\supp((M,\ x)) = \supp(M) \cup \{x\}\), kar sledi iz definicije produkta nominalnih množic.
 
-Opomba: \(\Gamma,\ \Gamma'\) je stik dveh kontekstov - stik dveh zaporedij.
-\fi
 \begin{izrek}
     Izraz \(M[N/x]\) je izraz induciran s kontekstom \(\Gamma,\ \Gamma'\), tj., \(\Gamma,\ \Gamma' \vdash M[N/x]\).
 \end{izrek}
@@ -706,17 +558,6 @@ Naj \(\Gamma,\ x \vdash M,\ M'\), \(\Gamma \vdash N\), \(M \ \#\ N \ \vert\ \Gam
 
 Če dokažemo \(\sub_{x,\ N} \sim \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\) in \(\sub_{x,\ N} \ \#\ \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\), potem lahko sklepamo, da iz \(M \sim M' \ \vert\ \Gamma,\ x,\ N\) sledi \(\sub_{x,\ N}(M) \sim \sub_{x,\ N}(M') \ \vert\ \Gamma,\ x,\ N\).
 
-\iffalse
-Naj \(\sub_{x,\ N}(M) := M[N/x]\) funkcija, ki substituira.
-
-Iz tega bo sledilo, da če \(\Gamma\) kontekst, potem iz \(M \ \#\ M' \ \vert\ \Gamma,\ x,\ N\) sledi \(\sub_{x,\ N}(M) \ \#\ \sub_{x,\ N}(M') \ \vert\ \Gamma,\ x,\ N\).
-
-To lastnost bomo označevali kot \(\sub_{x,\ N} \ \#\ \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\), ali še krajše \(\sub_{x,\ N} << \Gamma,\ x,\ N\).
-
-Podobno pa iz \(M \sim M' \ \vert\ \Gamma,\ x,\ N\) sledi \(\sub_{x,\ N}(M) \sim \sub_{x,\ N}(M') \ \vert\ \Gamma,\ x,\ N\), kar lahko pišemo kot \(\sub_{x,\ N} \sim \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\). Ampak povejmo raje najprej pogoje:
-
-Naj \(\Gamma,\ x \vdash M,\ M'\), \(\Gamma \vdash N\), \(M \ \#\ N \ \vert\ \Gamma\) in \(M' \ \#\ N \ \vert\ \Gamma\). Potem iz \(M \sim M' \ \vert\ \Gamma,\ x,\ N\) sledi \(\sub_{x,\ N}(M) \sim \sub_{x,\ N}(M') \ \vert\ \Gamma,\ x,\ N\).
-\fi
 
 Po definiciji \(\alpha\)-ekvivalence velja, da iz \(\Gamma,\ x \vdash M \equiv_\alpha M'\) sledi \(\Gamma \vdash M[N/x] \equiv_\alpha M'[N/x]\).
 
