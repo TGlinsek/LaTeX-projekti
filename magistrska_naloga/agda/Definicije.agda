@@ -1,14 +1,14 @@
 module Definicije where
 
 open import Agda.Builtin.Equality
-open import Agda.Builtin.Sigma
+--open import Agda.Builtin.Sigma
 open import Agda.Builtin.List
 open import Data.Bool.Base
 
 open import Relation.Nullary
-open import Relation.Nullary using (¬_)
+--open import Relation.Nullary using (¬_)
 --open import Relation.Binary.PropositionalEquality using (_≡_)
-open import Data.List.Membership.DecPropositional
+--open import Data.List.Membership.DecPropositional
 
 
 module Atom (Atom : Set) 
@@ -54,7 +54,36 @@ module Atom (Atom : Set)
     infix  9  `_
     
     data TermInContext : Context → Set where
-      `_ : (Γ : Context) → (x : Atom) → ((x ∈d Γ) ≡ true) → TermInContext Γ
-      _·_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → TermInContext Γ
-      ƛ_⇒_ : (Γ : Context) → (x : Atom) → (p : (x ∈d Γ) ≡ false) → TermInContext (Γ ∷ x d p) → TermInContext Γ
-      
+        `_ : {Γ : Context} → (x : Atom) → {(x ∈d Γ) ≡ true} → TermInContext Γ
+        _·_ : {Γ : Context} → TermInContext Γ → TermInContext Γ → TermInContext Γ
+        ƛ_⇒_ : {Γ : Context} → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (TermInContext (Γ ∷ x d p)) → TermInContext Γ
+    
+    concat : List Atom → List Atom → List Atom
+    concat A B = {!   !}
+
+    singleton : Atom → List Atom
+    singleton x = {!   !}
+
+    supp_ : {Γ : Context} → TermInContext Γ → List Atom
+    supp_ (` x) = singleton x
+    supp_ (M · N) = concat (supp M) (supp N)
+    supp_ (ƛ x ⇒ M) = concat (singleton x) (supp M)
+    
+
+    _∈ᵇ_ : Atom → List Atom → Bool
+    _∈ᵇᴰ_ : Atom → DistinctList → Bool
+
+    _⇒ᵇ_ : Bool → Bool → Bool
+    true  ⇒ᵇ b = b
+    false ⇒ᵇ _ = true
+
+    allᵇ : (Atom → Bool) → List Atom → Bool
+    allᵇ p [] = true
+    allᵇ p (x ∷ xs) = p x ∧ allᵇ p xs
+
+    infix 4 _⊢_#_
+
+
+    -- separatedness relation
+    _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Bool
+    _⊢_#_ Γ M N = allᵇ (λ x → ((_∈ᵇ_ x (supp N)) ⇒ᵇ (_∈ᵇᴰ_ x Γ))) (supp M)
