@@ -288,7 +288,7 @@ Te trditve lahko tudi skupaj zapišemo kot
 \[
     x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\  z \ \vert\  w.
 \]
-
+\newpage
 \section{Netipiziran lambda račun}
 
 \iffalse
@@ -431,6 +431,18 @@ Povsem analogno naredimo z relacijo separiranosti:
 \begin{oznaka}
     Če imamo izraza \(\Gamma \vdash M\) in \(\Delta \vdash N\), potem namesto \((\Gamma \vdash M) \ \#\ (\Delta \vdash N) \ \vert\ (\Gamma\, \cap\, \Delta)\) pišemo kar \((\Gamma\, \cap\, \Delta) \vdash M \ \#\ N\). Pogosto namreč fiksiramo elemente obeh kontekstov, ki so skupni obema izrazoma.
 \end{oznaka}
+
+
+Poglejmo si primer, kako lahko teorijo nominalnih množic uporabimo pri relacijah med lambda izrazi:
+
+\begin{lema}
+    Naj bo \(\Gamma \vdash M\) izraz nad kontekstom \(\Gamma\) in naj bo \(\Delta \vdash N\) izraz nad kontekstom \(\Delta\), tako da velja \((\Gamma \vdash M) \sim (\Delta \vdash N) \ \vert\ \Gamma\). Potem je \(\Gamma \vdash N\) dobro definiran izraz.
+\end{lema}
+
+\noindent
+{\em Dokaz:\/}
+Dokaz zaenkrat opustimo.
+\qed
 
 \subsection{Substitucija lambda izrazov}
 
@@ -693,9 +705,23 @@ Sedaj lahko sklepamo:
 kjer smo pri prvi in tretji ekvivalenci uporabili prvo lemo z dejstvom, da \(N \equiv_\alpha L \equiv_\alpha N'\), pri drugi ekvivalenci pa smo uporabili drugo lemo.
 
 \qed
-
+\newpage
 \section{Church-Rosserjev izrek}
-Formulirajmo ciljni izrek:
+Preden formuliramo ciljni izrek, definirajmo naslednje:
+\begin{oznaka}
+    Refleksivno-tranzitivno ovojnico relacije \(\rightarrow_\beta\) označimo z \(\rightarrow_\beta^*\). To je torej najmanjša relacija \(\rightarrow_\beta^*\), da za vsak kontekst \(\Gamma\) in izraze \(\Gamma \vdash M,\ N,\ L\) veljajo
+    \[
+        \Gamma \vdash M \rightarrow_\beta N\, \Longrightarrow\, \Gamma \vdash M \rightarrow_\beta^* N,
+    \]
+    \[
+        \Gamma \vdash M \rightarrow_\beta^* M,
+    \]
+    \[
+        \Gamma \vdash M \rightarrow_\beta^* N\, \wedge\, \Gamma \vdash N \rightarrow_\beta^* L\, \Longrightarrow\, \Gamma \vdash M \rightarrow_\beta^* L.
+    \]
+\end{oznaka}
+
+Zdaj lahko formuliramo glavni izrek.
 \begin{izrek_crosser}
     Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M \rightarrow_\beta^* N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
     \[
@@ -707,7 +733,6 @@ Formulirajmo ciljni izrek:
     \]
 \end{izrek_crosser}
 
-Treba je tu dodati še tranzitivno-refleksivno ovojnico, da je izrek pravilen.
 
 \noindent
 {\em Dokaz:\/}
