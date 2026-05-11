@@ -1,0 +1,660 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{beamer}
+
+\hypersetup{pdfpagemode=FullScreen} %full screen mode
+\setbeamertemplate{navigation symbols}{}
+\usepackage[slovene]{babel}
+%\usepackage[english]{babel} %designed for typesetting lebels(addr lebel,sticky lebels,etc)
+
+\usepackage[utf8]{inputenc}
+%\usepackage{lmodern}  % hm, če to importiraš, grške črke ne delajo??
+
+\def\qed{$\hfill\Box$}   % konec dokaza
+\def\qedm{\qquad\Box}   % konec dokaza v matematičnem načinu
+
+%\usepackage[latin1]{inputenc} %Accept different input encodings
+\usepackage{amsmath,amssymb, amsmath, mathtools} 
+\usepackage{graphicx} % required for inserting images
+\usepackage[T1]{fontenc} %for font encoding
+\usepackage{times} % use times font instead of default
+\usepackage{curves} %for drawing curves
+\usepackage{verbatim} %paragraph making environment 
+\usepackage{multimedia} %for multimedia like animation,movie etc...
+\usepackage{mathptmx} % font style
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage[symbol]{footmisc}
+\usepackage{mathtools}
+\usepackage{tikz} 
+\usepackage{multirow}
+\usepackage{qtree}
+\usepackage{stmaryrd}
+
+\usepackage{calligra}
+\usepackage[T1]{fontenc}
+
+\usepackage{algorithm,algorithmic}
+\usepackage{ulem}
+
+\makeatletter
+\def\bign#1{\mathclose{\hbox{$\left#1\vbox to8.5\p@{}\right.\n@space$}}\mathopen{}}
+\def\Bign#1{\mathclose{\hbox{$\left#1\vbox to11.5\p@{}\right.\n@space$}}\mathopen{}}
+\makeatother
+
+\usepackage{proof}
+\usepackage{dsfont} 
+
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Perm}{Perm}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Terms}{Terms}
+\DeclareMathOperator{\sub}{sub}
+\DeclareMathOperator{\vars}{vars}
+
+\newcommand{\inference}[3][]{\infer[#1]{#3}{#2}}
+
+\def\N{\mathbb{N}} % mnozica naravnih stevil
+\def\Z{\mathbb{Z}} % mnozica celih stevil
+\def\Q{\mathbb{Q}} % mnozica racionalnih stevil
+\def\R{\mathbb{R}} % mnozica realnih stevil
+\def\C{\mathbb{C}} % mnozica kompleksnih stevil
+
+% \DeclareMathOperator{\ord}{ord}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\usepackage{lipsum}
+\setbeamertemplate{caption}[numbered] % For numbering figures
+
+\def\qed{$\hfill\Box$}   % konec dokaza
+\newtheorem{izrek}{Izrek}
+\newtheorem{trditev}{Trditev}
+\newtheorem{posledica}{Posledica}
+\newtheorem{lema}{Lema}
+\newtheorem{definicija}{Definicija}
+\newtheorem{pripomba}{Pripomba}
+\newtheorem{primer}{Primer}
+\newtheorem{zgled}{Zgled}
+% \newtheorem{zgledi}{Zgledi uporabe}
+% \newtheorem{zglediaf}{Zgledi aritmetičnih funkcij}
+% \newtheorem{oznaka}{Oznaka}
+\newtheorem{domneva}{Domneva}
+\newtheorem{dokaz}{Dokaz}
+\newtheorem{opomba}{Opomba}
+\newtheorem{oznaka}{Oznaka}
+\newtheorem{izrek_crosser}{Izrek (Church–Rosserjev izrek)}
+
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}%this one also
+%\usecolortheme{beetle}
+%\usecolortheme{crane} % also use this one
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+\usecolortheme{whale} % Best one
+%\usecolortheme{wolverine} %use can use this also
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\setbeamercovered{transparent}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{theorems}[numbered]
+\setbeamerfont{title}{size=\Large}%\miniscule,command,tiny, scriptsize,footnotesize,small,normalsize,large,Large,LARGE,huge,Huge,HUGE
+\setbeamerfont{date}{size=\tiny}%{\fontsize{40}{48} \selectfont Text}
+
+\setbeamertemplate{itemize items}[triangle]
+\setbeamertemplate{itemize subitem}[circle]
+\setbeamertemplate{itemize subsubitem}[ball] 
+
+
+%------------------customized frame----------------------------
+\newcounter{cont}
+
+\makeatletter
+%allowframebreaks numbering in the title
+\setbeamertemplate{frametitle continuation}{%
+   % \setcounter{cont}{\beamer@endpageofframe}%
+    %\addtocounter{cont}{1}%
+   % \addtocounter{cont}{-\beamer@startpageofframe}%
+   % (\insertcontinuationcount/\arabic{cont})%
+}
+\makeatother
+%-----------------------customized-----------------------------
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{Lambda izrazi v nominalnih množicah} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\title[Lambda izrazi v nominalnih množicah]{Lambda izrazi v nominalnih množicah}  % sj je isto
+\author[Tadej Glinšek]{Tadej Glinšek\\{\small Mentor: prof.~dr.~Alexander Keith Simpson}}
+\institute[]{Fakulteta za matematiko in fiziko \\
+Oddelek za matematiko}
+
+
+
+ % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+%\institute[FMF] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+
+
+\medskip
+%\begin{center}
+%\includegraphics[width=0.1\textwidth]{uoh.png}
+%\end{center}
+\vspace{2cm}
+\medskip
+% Fakulteta za matematiko in fiziko% Your institution for the title page
+
+
+
+%\medskip
+%\textit{john@smith.com} % Your email address
+}
+%This will place the image at position "30 right/left and 120 up/down" relative to the top left corner of the current page.
+
+ \date{4.\ 5.\ 2026} % Date, can be changed to a custom date
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+% \maketitle?
+
+%\begin{frame}
+  %\frametitle{Content of the presentation}
+ % \tableofcontents[pausesections,shaded]
+ %\tableofcontents
+%\end{frame}
+
+% TABLE OF CONTENTS AT BEGIN OF EACH SECTION
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+
+%-------------------------------------------------------------------------------
+%-------------------------------INTRODUCTION--------------------------------
+%-----------------------------------------------------------
+
+
+\begin{frame}[fragile]
+\frametitle{Netipiziran lambda račun}
+
+Netipiziran lambda račun:
+\begin{itemize}
+\item Alonzo Church, 1930-ta
+\item \(\Lambda := \text{množica lambda izrazov}\)
+\item Množico \(\lambda\)-izrazov lahko opišemo z gramatiko:\[
+    t \in \Lambda ::= a \ \vert \ \lambda a.\ t\ \vert \ t\ t,
+\]kjer je \(a \in \vars\) spremenljivka.
+\item spremenljivka, abstrakcija, aplikacija
+\end{itemize}
+\pause
+\begin{definicija}
+    \(\lambda\)-izrazi v netipiziranem lambda računu so definirani z naslednjimi pravili:
+    \[
+        \inference[(x \in \vars)]{\quad \quad \quad \quad \quad}{x}
+    \]
+    \[
+        \inference{M \quad \quad \quad N}{M N}\quad \quad \quad \quad
+    \]
+    \[
+        \inference[(x \in \vars)]{\quad \quad M \quad \quad}{\lambda x.\ M}    
+    \]
+\end{definicija}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Predpogoji}
+
+\begin{definicija}
+    Naj bo \(G\) grupa. Množica \(X\) je \textbf{\(G\)-množica}, če grupa \(G\) deluje na množici \(X\), torej, za vsak \(g_1, g_2 \in G\) in \(x \in X\) velja
+    \[
+    (g_1 \cdot g_2) \cdot x = g_1 \cdot (g_2 \cdot x)
+    \]
+    in za enoto \(e\) velja
+    \[
+        e \cdot x = x.
+    \]
+\end{definicija}
+
+\pause
+\begin{definicija}
+Naj bo \(\mathds{A}\) neskončna množica in \(\Sym(\mathds{A})\) grupa vseh permutacij na \(\mathds{A}\). Permutacija \(\pi \in \Sym(\mathds{A})\) je \textbf{končna}, če je \(\{a \in \mathds{A}\ |\ \pi a \neq a\}\) končna množica.
+\end{definicija}
+
+\begin{definicija}
+Množico končnih permutacij iz \(\Sym(\mathds{A})\) označimo z oznako \(\Perm(\mathds{A})\).    
+\end{definicija}
+
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{frame}[fragile]
+\frametitle{Nosilec}
+\begin{definicija}
+
+\textbf{Nosilec} (angl. \textbf{support}) elementa \(x \in X\) je množica \(A \subseteq \mathds{A}\), da za vsak \(\pi \in \Perm \mathds{A}\) velja
+\[
+    (\forall a \in A.\ \pi\ a = a) \Rightarrow \pi \cdot x = x.
+\]
+\end{definicija}
+\begin{opomba}
+    Nosilcev elementa \(x\) je lahko več.
+\end{opomba}
+\pause
+
+\begin{trditev}
+    Množica \(A \subseteq \mathds{A}\) je nosilec za \(x \in X\) natanko tedaj, ko 
+    \[
+        \forall a,\ a' \in \mathds{A}\setminus A.\ (a\ a') \cdot x = x
+    \]
+\end{trditev}
+
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{Končni nosilci}
+
+
+\begin{definicija}
+    \textbf{Nominalna množica} je \(\Perm\mathds{A}\)-množica, katere vsak element ima končen nosilec.
+\end{definicija}
+\pause
+\begin{lema}
+    Naj bosta \(A\) in \(A'\) končna nosilca elementa \(x\). Potem je \(A\, \cap\, A'\) spet nosilec.
+\end{lema}
+
+\begin{opomba}
+    Sledi, da če obstaja končen nosilec elementa \(x\), potem obstaja najmanjši nosilec. Označimo ga \(\supp_X(x)\).
+\end{opomba}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Produkti}
+
+\begin{definicija}
+    Naj bodo \(X_i\), kjer \(i = 1,\ \ldots,\ n\), nominalne množice. Potem je \(X_1 \times \cdots \times X_n\) spet nominalna množica:
+    \[
+        \pi \cdot (x_1,\ \ldots,\ x_n) = (\pi \cdot x_1,\ \ldots,\ \pi \cdot x_n)
+    \]
+\end{definicija}
+\pause
+\begin{trditev}
+    Za nominalne množice \(X_i\), kjer \(i = 1,\ \ldots,\ n\), velja:
+    \[
+        \supp_{X_1 \times \cdots \times X_n}(x_1,\ \ldots,\ x_n) = \supp_{X_1} x_1\, \cup\, \cdots\, \cup\, \supp_{X_n} x_n
+    \]
+\end{trditev}
+
+
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[fragile]
+\frametitle{Relacije}
+\begin{definicija}
+    Naj bo \(X\) nominalna množica in \(x, y \in X\) elementa.
+    Elementa \(x\) in \(y\) sta \textbf{orbitno ekvivalentna} (\(x \sim y\)), če velja, da obstaja \(\pi \in \Perm \mathds{A}\), da
+    \[
+        \pi \cdot x = y
+    \]
+    
+\end{definicija}
+\pause
+\begin{definicija}
+    Naj bosta \(X, Y\) nominalni množici, \(x \in X\), \(y \in Y\). Pravimo, da sta \(x\) in \(y\) \textbf{separirana} (\(x \ \#\ y\)), če velja:
+    \[
+        x \ \#\ y\ :\Longleftrightarrow\ \supp x\, \cap\, \supp y = \emptyset
+    \]
+\end{definicija}
+    
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Relacije}
+
+\begin{definicija}
+    Naj bodo \(X, Y, Z\) nominalne množice, \(x \in X\), \(y \in Y\), \(z \in Z\). Pravimo, da sta \(x\) in \(y\) \textbf{pogojno separirana} glede na \(z\), če velja
+    \[
+        x \ \#\  y \ \vert \ z\ :\Longleftrightarrow\ \supp(x)\, \cap\, \supp(y) \subseteq \supp(z)
+    \]
+\end{definicija}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Lastnosti relacij}
+
+\begin{trditev}
+    Naj bosta \(X\) in \(Y \subseteq X\) nominalni množici. Naj \(x \in X\) in \(y \in Y\). Potem \(x \sim y \Rightarrow x \in Y\).
+\end{trditev}
+\pause
+\begin{trditev}
+    Za vsaka \(x,\ y \in X\) obstaja \(z \in X\), da velja \(z \ \#\  x\) in \(z \sim y\).
+\end{trditev}
+\pause
+\begin{trditev}
+    Za vsako trojico \(x,\ y,\ w \in X\) obstaja \(z \in X\), da velja \(z \ \#\  x\ \ \vert\ \ w\) in \(z \sim y\ \ \vert\ \ w\).
+\end{trditev}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Lastnosti relacij}
+
+\begin{trditev}
+    Naj bodo \(X,\ Y,\ Z,\ W\) nominalne množice, \(x,\ y,\ z,\ w\) pa njihovi elementi. Potem velja:
+    \[
+        x \ \#\  (y,\ z) \ \vert\ w\ \Longleftrightarrow\ x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\ z \ \vert\ w
+    \]
+\end{trditev}
+\pause
+\begin{zgled}
+    Naj bodo \(A,\ B,\ C\) slučajne spremenljivke. Če velja
+    \[
+        A\ \perp\ B\ \vert\ C\ :\Longleftrightarrow\ P((A,\ B) \ \vert\ C) = P(A\ \vert\ C)P(B\ \vert\ C)
+    \] pravimo, da sta \(A\) in \(B\) pogojno neodvisni glede na \(C\).
+    
+    Naj bodo \(X,\ Y,\ Z,\ W\) slučajne spremenljivke. Potem velja
+    \[
+        X \, \perp\,  (Y,\ Z) \ \vert\ W\ \Longleftrightarrow\ X \, \perp\,  Y \ \vert\ (Z,\ W)\ \wedge\ X \, \perp\, Z \ \vert\ W
+    \]
+\end{zgled}
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+\frametitle{Lambda izrazi nad kontekstom}
+
+% \(\lambda\)-izraze definiramo skupaj s kontekstom:
+
+\begin{definicija}
+    \(\lambda\)-izraz \(M\) nad kontekstom \(\Gamma\) je definiran z naslednjimi pravili:
+    \[
+        \inference[(x \in \Gamma)]{}{\Gamma \vdash x}
+    \]
+    \[
+        \inference{\Gamma \vdash M \quad \Gamma \vdash N}{\Gamma \vdash M N}
+    \]
+    \[
+        \inference[(x \notin \Gamma)]{\Gamma,\ x \vdash M}{\Gamma \vdash \lambda x.\ M}    
+    \]
+Kontekst \(\Gamma\) definiramo kot končno zaporedje elementov množice \(\mathds{A}\).
+\end{definicija}
+\pause
+\begin{definicija}
+\[
+    \Terms_{\Gamma} := \{\Gamma \vdash M\ |\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
+\]
+\[
+    \Terms := \{\Gamma \vdash M\ |\ \Gamma\ \text{je kontekst},\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
+\]
+\end{definicija}
+\end{frame}
+
+% za kontekst nekako velja, da vsebuje vse proste spremenljivke
+
+
+\begin{frame}[fragile]
+\frametitle{Delovanje permutacij na množico \(\Terms\)}
+
+\begin{definicija}
+    Naj bo \(\Gamma = a_1,\,\ a_2,\ \ldots,\ a_n\) končno zaporedje elementov iz \(\mathds{A}\). Permutacija \(\pi \in \Perm\mathds{A}\) slika zaporedje \(\Gamma\) v \(\pi(a_1), \ \pi(a_2), \ \ldots, \ \pi(a_n)\).
+\end{definicija}
+\pause
+\begin{definicija}
+    Delovanje grupe \(\Perm{\mathds{A}}\) na množico izrazov je definirano sledeče:
+    \[
+        \pi(\Gamma \vdash x) := \pi(\Gamma) \vdash \pi(x)
+    \]
+    \[
+        \pi(\Gamma \vdash MM') := \pi(\Gamma ) \vdash \pi(M)\pi(M')
+    \]
+    \[
+        \pi(\Gamma \vdash \lambda x.\ M) := \pi(\Gamma) \vdash \lambda \pi(x). \pi(M)
+    \]
+\end{definicija}
+
+
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Substitucija}
+
+
+\begin{definicija}
+    Naj bosta \(\Gamma,\ x \vdash M\) in \(\Gamma \vdash N\) \(\lambda\)-izraza, tako da velja \[N \ \#\ M \ \vert\ \Gamma.\] Potem definiramo \(\Gamma \vdash M[N/x]\) kot
+    
+    \[z[N/x]\, :=\, \begin{cases*}
+    N & če z = x,\\
+    z & sicer,
+    \end{cases*}
+    \]
+    \[
+        (M'\ M'')[N/x]\, :=\, M'[N/x]\ M''[N/x],\ \ \ \ \ 
+    \]
+    \[
+        (\lambda z.\ M')[N/x]\, :=\, \lambda z.\ (M'[N/x]).\quad \quad \quad
+    \]
+    
+    
+\end{definicija}
+\pause
+\begin{izrek}
+    Če so zgornji pogoji izpolnjeni, je izraz \(\Gamma \vdash M[N/x]\) dobro definiran.
+\end{izrek}
+\end{frame}
+
+
+%\iffalse
+\begin{frame}[fragile]
+\frametitle{test}
+
+\begin{lema}
+    Naj \(\Gamma \vdash M\) \(\lambda\)-izraz, \(z\) spremenljivka, in naj velja \(z \ \#\  M,\ \Gamma\). Potem velja \[
+        \Gamma,\ z \vdash M.
+    \]
+\end{lema}
+
+\end{frame}
+%\fi
+
+
+\begin{frame}[fragile]
+\frametitle{\(\alpha\)-ekvivalenca}
+
+
+\begin{definicija}
+    Relacija \(\equiv_\alpha\) je definirana s sledečimi pravili:
+    \[
+        \inference[]{}{\Gamma,\ x\ \vdash x \ \equiv_\alpha\ x}
+    \]
+    \[
+        \inference{\Gamma \vdash M\ \equiv_\alpha\ M' \quad \Gamma \vdash N\ \equiv_\alpha\ N'}{\Gamma \vdash MN\ \equiv_\alpha\ M'N'}
+    \]
+    \[
+        \inference{\Gamma,\ x \vdash M\ \equiv_\alpha\ N}{\Gamma \vdash \lambda x.\ M\ \equiv_\alpha\ \lambda x.\ N}
+    \]
+    \[
+        \inference{\Gamma \vdash M \quad \Gamma \vdash N \quad (\Gamma \vdash M) \sim (\Gamma \vdash N) \ \vert\ \Gamma}{\Gamma \vdash M\ \equiv_\alpha\ N}
+    \]
+    Če za dva izraza velja \(\Gamma \vdash M\ \equiv_\alpha\ N\), potem rečemo, da sta izraza \textbf{\(\alpha\)-ekvivalentna}.
+\end{definicija}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\(\alpha\)-ekvivalenca}
+\begin{trditev}
+    Naj bo \(\Gamma \vdash M\) izraz nad kontekstom \(\Gamma\) in naj bo \(\Delta \vdash N\) izraz nad kontekstom \(\Delta\), tako da velja \((\Gamma \vdash M) \sim (\Delta \vdash N) \ \vert\ \Gamma\). Potem je \(\Gamma \vdash N\) dobro definiran izraz.
+\end{trditev}
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+\frametitle{\(\beta\)-redukcija}
+
+\begin{definicija}
+    Relacija \(\beta\)-redukcija (označimo z \(\rightarrow_\beta\)) je definirana s sledečimi pravili:
+    \[
+        \inference{\Gamma \vdash M \rightarrow_\beta M' \quad \Gamma \vdash N}{\Gamma \vdash MN \rightarrow_\beta M'N}
+    \]
+    \[
+        \inference{\Gamma \vdash N \rightarrow_\beta N' \quad \Gamma \vdash M}{\Gamma \vdash MN \rightarrow_\beta MN'}
+    \]
+    \[
+        \inference{\Gamma,\ x \vdash M \rightarrow_\beta M'}{\Gamma \vdash \lambda x.\ M \rightarrow_\beta \lambda x.\ M'}
+    \]
+    \[
+        \inference{\Gamma,\ x \vdash M \quad \Gamma \vdash N \quad N' \sim N \ \vert\ \Gamma \quad M \ \#\ N' \ \vert\ \Gamma}{\Gamma \vdash (\lambda x.\ M)N \rightarrow_\beta M[N'/x]}
+    \]
+\end{definicija}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{\(\beta\)-redukcija}
+
+\begin{lema}
+    Naj \(\Gamma \vdash M \rightarrow_\beta M'\) in naj
+    \(\Gamma \vdash M \equiv_\alpha N\).
+    Potem velja, da obstaja \(N'\), da \(\Gamma \vdash M' \equiv_\alpha N' \) in \(\Gamma \vdash N \rightarrow_\beta N'\).
+\end{lema}
+\pause
+\begin{lema}
+    Naj bo \(\Gamma\) kontekst, \(x \in \mathds{A}\) pa se ne pojavi v \(\Gamma\). Naj velja \(\Gamma,\ x \vdash M,\ M'\) in \(\Gamma \vdash N,\ N'\), tako da \(\Gamma \vdash M \equiv_\alpha M'\) in \(\Gamma \vdash N \equiv_\alpha N'\). Naj velja še \(M \ \#\ N \ \vert\ \Gamma\) in \(M' \ \#\ N' \ \vert\ \Gamma\). Potem sta \(\Gamma \vdash M[N/x],\ M'[N'/x]\) dobro definirana in velja \(\Gamma \vdash M[N/x] \equiv_\alpha M'[N'/x]\).
+\end{lema}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Church-Rosserjev izrek}
+\begin{izrek_crosser}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta N_1\) in \(\Gamma \vdash M \rightarrow_\beta N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
+    \[
+        \Gamma \vdash N_1 \rightarrow_\beta X
+    \]
+    in
+    \[
+        \Gamma \vdash N_2 \rightarrow_\beta X.
+    \]
+\end{izrek_crosser}
+
+\end{frame}
+%--------------------------------------------------------------------------------------------------------------------------------
+%\section{Information processing  issues}
+%-----------------------------------------------
+%\begin{frame}
+%\frametitle{Information processing issues}
+%\begin{itemize} 
+%\item In collaborative processing
+%\begin{itemize}
+%\item Target detection, localization, communication, storage, querying...
+%\end{itemize}
+%\color{lightgray}
+%\item  In networking
+%\begin{itemize}
+%\color{lightgray}
+%\item  aggregation, routing, Data naming,...
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
+
+%-----------------------------------------------
+\iffalse
+\section{References}
+\begin{frame}[allowframebreaks]
+\frametitle{References}
+ \nocite{*}
+ \bibliographystyle{unsrt}
+\bibliography{References}
+\end{frame}
+\fi
+
+%-----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}
