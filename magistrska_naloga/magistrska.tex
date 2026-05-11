@@ -112,7 +112,7 @@ Prav tako bo v tem poglavju \(X\) vedno \(\Perm \mathds{A}\)-množica.
 
 \textbf{Nosilec} (angl. \emph{support}) elementa \(x \in X\) definiramo kot množico \(A \subseteq \mathds{A}\), za katero velja, da za vsak \(\pi \in \Perm \mathds{A}\) velja, da če \(\pi\) fiksira vsak \(a \in A\), potem \(\pi\) stabilizira \(x\). Z drugimi besedami, \(A\) je nosilec \(x\)-a, če:
 \[
-    \forall \pi \in \Perm \mathds{A}.\ (\forall a \in A.\ \pi\ a = a) \Rightarrow \pi \cdot x = x
+    \forall\ \pi \in \Perm \mathds{A}.\ (\forall\ a \in A.\ \pi\ a = a) \Rightarrow \pi \cdot x = x
 \]
 
 Nosilec elementa \(x \in X\) označimo \(\supp_X(x)\). Če lahko množico \(X\) razberemo iz konteksta, potem pišemo kar \(\supp(x)\).
@@ -125,7 +125,7 @@ Obstaja naslednja karakterizacija nosilca:
 \begin{trditev}
     Množica \(A \subseteq \mathds{A}\) je nosilec za \(x \in X\) natanko tedaj, ko 
     \[
-        \forall a,\ a' \in \mathds{A}\setminus A.\ (a\ a') \cdot x = x
+        \forall\ a,\ a' \in \mathds{A}\setminus A.\ (a\ a') \cdot x = x
     \]
 \end{trditev}
 
@@ -143,7 +143,7 @@ Obstaja naslednja karakterizacija nosilca:
 \end{zgled}
 
 \begin{definicija}
-    Če za element \(x \in X\) obstaja nosilec \(A\), ki je končna množica, potem je \(x\) \textbf{končno podprt} (angl. \emph{finitely supported}).
+    Če za element \(x \in X\) obstaja nosilec \(A\), ki je končna množica, potem je \(x\) \textbf{končno podprt} (angl. \emph{finitely supported}).  % podprt? nošen?
 \end{definicija}
 
 Predpostavimo, da ima \(x\) dva nosilca \(A\) in \(A'\), tako da \(A\, \cup\, A'\) ne pokrije celotnega \(\mathds{A}\) (tj. \(\mathds{A} \setminus (A\, \cup\, A')\) je neprazen). Potem se izkaže, da je \(A\, \cap\, A'\) prav tako nosilec \(x\).
@@ -152,7 +152,7 @@ Predpostavimo, da ima \(x\) dva nosilca \(A\) in \(A'\), tako da \(A\, \cup\, A'
 {\em Dokaz:\/}
 Dokazujemo
     \[
-        \forall a,\ a' \in \mathds{A}\setminus (A\, \cap\, A').\ (a\ a') \cdot x = x
+        \forall\ a,\ a' \in \mathds{A}\setminus (A\, \cap\, A').\ (a\ a') \cdot x = x
     \]
 
 Če sta \(a\) in \(a'\) oba iz \(\mathds{A}\setminus A\), potem \((a \ a') \cdot x = x\), saj je \(A\) nosilec. Analogno sklepamo, če sta \(a\) in \(a'\) oba iz \(\mathds{A}\setminus A'\).  % dejansko tega ne rabimo, saj argument deluje v splošnem
@@ -206,10 +206,18 @@ Vpeljimo najprej relacijo orbitne ekvivalence:
 \begin{definicija}
     Naj bosta \(x, y\) elementa nominalne množice \(X\). Rečemo, da sta \(x\) in \(y\) \textbf{orbitno ekvivalentna}, če velja
     \[
-        x \sim y :\Longleftrightarrow \exists \pi \in \Perm \mathds{A}. \pi \cdot x = y.
+        x \sim y :\Longleftrightarrow \exists\ \pi \in \Perm \mathds{A}. \pi \cdot x = y.
     \]
 \end{definicija}
 Z drugimi besedami, velja \(x \sim y\), če sta oba v isti orbiti delovanja grupe \(\Perm \mathds{A}\) na \(X\). Izkaže se, da je ta relacija je tudi nominalna množica kot množica parov elementov, ki so si v relaciji.
+
+Obstaja še pogojni analog te relacije:
+\begin{definicija}
+    Naj bosta \(x, y\) elementa nominalne množice \(X\) in \(z\) element nominalne množice \(Z\). Rečemo, da sta \(x\) in \(y\) \textbf{orbitno ekvivalentna glede na \(z\)}, če velja
+    \[
+        x \sim y \ \vert \ z :\Longleftrightarrow \exists\ \pi \in \Perm \mathds{A}. \pi \cdot x = y\, \wedge\, \pi \cdot z = z.
+    \]
+\end{definicija}
 
 Naslednji relaciji, ki ju uvajamo, se poslužujeta nosilcev elementov.
 \begin{definicija}
@@ -278,7 +286,7 @@ Naslednja trditev nam bo prišla prav:
 \end{trditev}
 Te trditve lahko tudi skupaj zapišemo kot
 \[
-    x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  y \ \vert\ (z,\ w) \wedge x \ \#\  z \ \vert\  w.
+    x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\  z \ \vert\  w.
 \]
 
 \section{Netipiziran lambda račun}
@@ -298,23 +306,16 @@ Naj bo \(\sim\) ekvivalenčna relacija, ki enači izraze oblike \(\Gamma \vdash 
 
 Sedaj definiramo relacijo \(\equiv_{\alpha}^\Gamma\), ki je relacija med izrazi nad istim kontekstom. Natančneje, ta relacija je relacija na množici 
 \[
-    \Terms_{\Gamma} := \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}.
+    \Terms_{\Gamma} \coloneq \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}.
 \]
 To je množica izrazov nad istim kontekstom \(\Gamma\).
 
 Tej ekvivalenci pravimo \textbf{\(\alpha\)-ekvivalenca}. Namesto \(\Lambda\) se bomo torej pogosto osredotočili na \(\Lambda/\equiv_{\alpha}\).
 
-
-
-
-% Izraze generiramo z naslednjimi pravili TODO
-
-
-
 Množica vseh izrazov je nominalna množica:
 
 \[
-    \Terms := \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}
+    \Terms \coloneq \{\Gamma \vdash M |\ \Gamma \vdash M \ \text{je izraz}\}
 \]
 
 \fi
@@ -325,6 +326,7 @@ V tem poglavju bomo definirali lambda izraze na drugačen način kot smo jih vaj
 \begin{definicija}
     \textbf{Kontekst} \(\Gamma\) je končno zaporedje paroma različnih atomov.        
 \end{definicija}
+
 
 Iz \(\lambda\)-računa vemo, kako so definirani izrazi \(M\), če predpostavimo nek konstekst \(\Gamma\). Mi se bomo tega lotili drugače: \(\lambda\)-izraze bomo definirali skupaj s kontekstom.
 
@@ -347,17 +349,7 @@ Kontekst \(\Gamma\) predstavlja nabor možnih prostih spremenljivk, ki se lahko 
     Če se \(x\) pojavi v \(\Gamma \vdash M\), potem se ne more pojaviti kot prosta in vezana spremenljivka hkrati.
 \end{opomba}
 
-Lambda izraze nad kontekstom lahko gledamo kot množico:
-\begin{definicija}
-    \[
-        \Terms_{\Gamma} := \{\Gamma \vdash M\ |\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
-    \]
-    \[
-        \Terms := \{\Gamma \vdash M\ |\ \Gamma\ \text{je kontekst},\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
-    \]
-\end{definicija}
 
-Obedve množici sta nominalni množici.
 
 \subsection{Delovanje permutacij na množici \(\Terms\)}
 
@@ -369,18 +361,23 @@ Zdaj moramo definirati delovanje permutacij na lambda izrazih. Najprej definiram
 
 Definicija pravi, da permutacija deluje na kontekstu po atomih.
 
+\begin{opomba}
+    Množica vseh kontekstov \(\Gamma\) je nominalna množica.
+\end{opomba}
+
+
 Sedaj lahko definiramo delovanje permutacije na lambda izrazu nad kontekstom. Ideja je, da permutiramo lambda izraz in njegov kontekst \emph{po atomih}:
 
 \begin{definicija}
     Delovanje grupe \(\Perm{\mathds{A}}\) na množico izrazov je definirano sledeče:
     \[
-        \pi(\Gamma \vdash x) := \pi(\Gamma) \vdash \pi(x)
+        \pi(\Gamma \vdash x) \coloneq \pi(\Gamma) \vdash \pi(x)
     \]
     \[
-        \pi(\Gamma \vdash MM') := \pi(\Gamma ) \vdash \pi(M)\pi(M')
+        \pi(\Gamma \vdash MM') \coloneq \pi(\Gamma ) \vdash \pi(M)\pi(M')
     \]
     \[
-        \pi(\Gamma \vdash \lambda x.\ M) := \pi(\Gamma) \vdash \lambda \pi(x). \pi(M)
+        \pi(\Gamma \vdash \lambda x.\ M) \coloneq \pi(\Gamma) \vdash \lambda \pi(x). \pi(M)
     \]
 \end{definicija}
 
@@ -389,6 +386,18 @@ Sedaj lahko definiramo delovanje permutacije na lambda izrazu nad kontekstom. Id
 \end{opomba}
 
 Ker smo s tem opisali delovanje permutacij na množico izrazov oblike \(\Gamma \vdash M\), je ta množica \(\Perm{\mathds{A}}\)-množica. Izkaže se, da je tudi nominalna množica.
+
+Lambda izraze nad kontekstom lahko gledamo kot množico:
+\begin{definicija}
+    \[
+        \Terms_{\Gamma} \coloneq \{\Gamma \vdash M\ |\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
+    \]
+    \[
+        \Terms \coloneq \{\Gamma \vdash M\ |\ \Gamma\ \text{je kontekst},\ \Gamma \vdash M \ \text{je \(\lambda\)-izraz}\}
+    \]
+\end{definicija}
+
+Obedve množici sta nominalni množici.
 
 \begin{opomba}
     Včasih bomo kontekst spustili. Takrat \(\pi(M)\) pač predstavlja izraz \(M'\) v \(\pi(\Gamma \vdash M) = \Gamma' \vdash M'\).
@@ -403,6 +412,26 @@ Spomnimo se relacije orbitne ekvivalence: za dva izraza \(\Gamma \vdash M\) in \
 
 Opomba: \(\pi(\Gamma) = \Gamma'\) pomeni, da sta obe zaporedji iste dolžine in da se \(i\)-ti člen zaporedja \(\Gamma\) slika v \(i\)-ti člen zaporedja \(\Gamma'\). Torej, \(\Gamma \sim \Gamma'\) pomeni, da za vsako mesto v zaporedju imamo isto permutacijo \(\pi\): ne more \(\pi\) biti odvisna od \(i\), kjer \(i\) pomeni indeks člena v zaporedju. To je sorodno s konceptom \emph{odvisne porazdelitve} (angl. joint distribution) pri slučajnih spremenljivkah.
 
+\subsection{Relacije lambda izrazov}
+
+Zdaj, ko imamo nominalno strukturo na lambda izrazih, lahko pogledamo, kaj te relacije pomenijo.
+
+Po definiciji delovanja permutacije na lambda izrazu, velja, da sta dva izraza orbitno ekvivalentna, če lahko s permutacijo spremenljivk (tako prostih kot vezanih) pridemo iz enega izraza v drugega. Ampak treba je paziti, da ne spreminjamo vrstnega reda spremenljivk v kontekstu: če spremenimo, načeloma dobimo izraz, ki ni več orbitno ekvivalenten prvotnemu.
+
+Velikokrat bomo imeli dva izraza s podobnim kontekstom, kjer želimo, da se njima skupne spremenljivke ne permutirajo, vse preostale spremenljivke se pa lahko. Zato lahko uvedemo naslednjo notacijo.
+
+\begin{oznaka}
+    Če imamo izraza \(\Gamma \vdash M\) in \(\Delta \vdash N\), potem namesto \((\Gamma \vdash M) \sim (\Delta \vdash N) \ \vert\ (\Gamma\, \cap\, \Delta)\) pišemo kar \((\Gamma\, \cap\, \Delta) \vdash M \sim N\). Pogosto namreč fiksiramo elemente obeh kontekstov, ki so skupni obema izrazoma.
+\end{oznaka}
+
+Zapis je malce dvoumen, ker sta \(\Gamma\) in \(\Delta\) načeloma večja konteksta kot pa \((\Gamma\, \cap\, \Delta)\). Toda načeloma je razvidno, kaj sta konteksta od \(M\) in \(N\), in ker se pojavita le v enem izmed obeh izrazov, nista tako relevantna za razumevanje pomena te relacije.
+
+Povsem analogno naredimo z relacijo separiranosti:
+
+\begin{oznaka}
+    Če imamo izraza \(\Gamma \vdash M\) in \(\Delta \vdash N\), potem namesto \((\Gamma \vdash M) \ \#\ (\Delta \vdash N) \ \vert\ (\Gamma\, \cap\, \Delta)\) pišemo kar \((\Gamma\, \cap\, \Delta) \vdash M \ \#\ N\). Pogosto namreč fiksiramo elemente obeh kontekstov, ki so skupni obema izrazoma.
+\end{oznaka}
+
 \subsection{Substitucija lambda izrazov}
 
 Uvedimo pojem substitucije.
@@ -410,16 +439,16 @@ Uvedimo pojem substitucije.
 \begin{definicija}
     Naj bosta \(\Gamma,\ x,\ \Gamma' \vdash M\) in \(\Gamma,\ \Gamma' \vdash N\) \(\lambda\)-izraza, tako da velja \[N \ \#\  M \ \vert\  \Gamma,\ \Gamma'.\] Potem definiramo \(\Gamma,\ \Gamma' \vdash M[N/x]\) kot
     
-    \[z[N/x]\, :=\, \begin{cases*}
+    \[z[N/x]\, \coloneq\, \begin{cases*}
     N & če z = x,\\
     z & sicer,
     \end{cases*}
     \]
     \[
-        (M'\ M'')[N/x]\, :=\, M'[N/x]\ M''[N/x],\ \ \ \ \ 
+        (M'\ M'')[N/x]\, \coloneq\, M'[N/x]\ M''[N/x],\ \ \ \ \ 
     \]
     \[
-        (\lambda z.\ M')[N/x]\, :=\, \lambda z.\ (M'[N/x]).\quad \quad \quad
+        (\lambda z.\ M')[N/x]\, \coloneq\, \lambda z.\ (M'[N/x]).\quad \quad \quad
     \]
     
     
@@ -494,7 +523,17 @@ Z uporabo dejstev \(\Gamma,\ x,\ \Gamma',\ z \vdash M'\),\ \ \  \(\Gamma,\ \Gamm
     Ker so atomi v zaporedjih, ki predstavljajo kontekst za \(\lambda\)-izraze, enolični (se ne ponavljajo), nesmiselnih izrazov ne moremo skonstruirati, npr. \(\lambda x.(\lambda x.x)\). Lahko pa definiramo izraze kot so \((\lambda x.x)(\lambda x.x)\).
 \end{opomba}
 
+Sedaj lahko definiramo še relacijo, ki posploši substitucijo:
 
+\begin{definicija}
+    Naj bodo \(\Gamma,\ x,\ \Gamma' \vdash M\),\ \ \ \(\Gamma,\ \Gamma' \vdash N\) in \(\Gamma,\ \Gamma' \vdash L\) lambda izrazi.
+    Definirajmo relacijo \(\sub\) med temi izrazi kot:
+    \[\sub(M, N, L) \coloneq \exists\ \Gamma,\ \Gamma' \vdash N'.\ \ \ N' \sim N \ \vert\ \Gamma,\ \Gamma',\ \ \ M \ \#\ N' \ \vert \ \Gamma,\ \Gamma',\ \ \ L = M[N'/x].\]
+\end{definicija}
+Če ta relacija velja, potem označimo
+\[
+    \Gamma,\ \Gamma' \vdash L \approx M[N/x]
+\]
 
 \subsection{\(\alpha\)-ekvivalenca}
 
@@ -555,6 +594,11 @@ V tem podpoglavju definiramo relacijo \(\beta\)-redukcije. To je funkcijska rela
     \]
 \end{definicija}
 
+Ta zadnje pravilo lahko krajše zapišemo kot
+\[
+    \inference{\Gamma \vdash L \approx M[N/x]}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta M[N'/x]}
+\]
+
 Naslednja lema bo osrednjega pomena.
 
 \begin{lema}
@@ -612,7 +656,7 @@ Preden dokažemo lemo, uvedimo naslednji koncept:
 \end{definicija}
 
 Naj bo \(\Gamma\) zaporedje atomov in \(x \in \mathds{A}\) atom, \(x \notin \Gamma\).
-Naj bodo \(\Gamma,\ x \vdash M,\ M'\), \(\Gamma \vdash N\), \(M \ \#\ N \ \vert\ \Gamma\) in \(M' \ \#\ N \ \vert\ \Gamma\). Definirajmo funkcijo \(\sub_{x,\ N}\): \[\sub_{x,\ N}(M) := M[N/x].\]
+Naj bodo \(\Gamma,\ x \vdash M,\ M'\), \(\Gamma \vdash N\), \(M \ \#\ N \ \vert\ \Gamma\) in \(M' \ \#\ N \ \vert\ \Gamma\). Definirajmo funkcijo \(\sub_{x,\ N}\): \[\sub_{x,\ N}(M) \coloneq M[N/x].\]
 
 Če dokažemo \(\sub_{x,\ N} \sim \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\) in \(\sub_{x,\ N} \ \#\ \sub_{x,\ N} \ \vert\ \Gamma,\ x,\ N\), potem lahko sklepamo, da iz \(M \sim M' \ \vert\ \Gamma,\ x,\ N\) sledi \(\sub_{x,\ N}(M) \sim \sub_{x,\ N}(M') \ \vert\ \Gamma,\ x,\ N\).
 
@@ -653,17 +697,17 @@ kjer smo pri prvi in tretji ekvivalenci uporabili prvo lemo z dejstvom, da \(N \
 \section{Church-Rosserjev izrek}
 Formulirajmo ciljni izrek:
 \begin{izrek_crosser}
-    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta N_1\) in \(\Gamma \vdash M \rightarrow_\beta N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M \rightarrow_\beta^* N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
     \[
-        \Gamma \vdash N_1 \rightarrow_\beta X
+        \Gamma \vdash N_1 \rightarrow_\beta^* X
     \]
     in
     \[
-        \Gamma \vdash N_2 \rightarrow_\beta X.
+        \Gamma \vdash N_2 \rightarrow_\beta^* X.
     \]
 \end{izrek_crosser}
 
-% Treba je tu dodati še tranzitivno-refleksivno ovojnico, da je izrek pravilen.
+Treba je tu dodati še tranzitivno-refleksivno ovojnico, da je izrek pravilen.
 
 \noindent
 {\em Dokaz:\/}
