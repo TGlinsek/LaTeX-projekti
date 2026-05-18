@@ -15,6 +15,26 @@ _⇒_ : Bool → Bool → Bool
 true  ⇒ b = b
 false ⇒ _ = true
 
+helper :
+  {a b : Bool} →
+  ((a ≡ true) → (b ≡ true)) →
+  (a ⇒ b) ≡ true
+helper {true}  f = f refl
+helper {false} f = refl
+
+helper2 :
+  {a b : Bool} → ((a ⇒ b) ≡ true) → (a ≡ true) → (b ≡ true)  -- puščice → so desno asociativne, kot pričakovano
+helper2 {true}  {b} p pa = p
+helper2 {false} {b} p ()
+
+
+b : {a b : Bool} → ((a ≡ true) → (b ≡ true)) → ((b ≡ true) → (a ≡ true)) → ((a ⇒ b) ∧ (b ⇒ a) ≡ true)
+b = {!   !}
+
+{-
+c : {a b : Bool} → ((a ⇒ b) ≡ true) → ((b ⇒ a) ≡ true) → ((a ≡ true) → (b ≡ true)) × ((b ≡ true) → (a ≡ true))
+c = ?
+-}
 
 ∨-trueˡ : (b : Bool) → true ∨ b ≡ true
 ∨-trueˡ b = refl
@@ -84,6 +104,21 @@ absurdizem ()
 ∨-false-elim'' : {b c : Bool} → b ≡ false → (b ∨ c ≡ true) → c ≡ true
 ∨-false-elim'' refl p = p
 
+kontrapozitiv1 : {a b : Bool} → (f : (a ≡ false) → (b ≡ false)) → (b ≡ true) → (a ≡ true)
+kontrapozitiv1 {true}  f pb = refl
+kontrapozitiv1 {false} f pb rewrite f refl = pb
+
+kontrapozitiv2 : {a b : Bool} → (f : (a ≡ true) → (b ≡ true)) → (b ≡ false) → (a ≡ false)
+kontrapozitiv2 {false} f pb = refl
+kontrapozitiv2 {true} f pb rewrite f refl = pb
+
+kontrapozitiv3 : {a b : Bool} → (f : (a ≡ true) → (b ≡ false)) → (b ≡ true) → (a ≡ false)
+kontrapozitiv3 {false} f pb = refl
+kontrapozitiv3 {true} f pb rewrite f refl = sym pb
+
+kontrapozitiv4 : {a b : Bool} → (f : (a ≡ false) → (b ≡ true)) → (b ≡ false) → (a ≡ true)
+kontrapozitiv4 {true} f pb = refl
+kontrapozitiv4 {false} f pb rewrite f refl = sym pb
 
 module Atom (Atom : Set)
     (_≟_ : (x y : Atom) → Dec (x ≡ y))
@@ -102,22 +137,6 @@ module Atom (Atom : Set)
 
     ∧-false-from-right2 : {a b x y : Atom} → (_==_ a x ≡ false) → (_==_ b y ∧ _==_ a x) ≡ false
     ∧-false-from-right2 p = ∧-false-from-right p
-
-    kontrapozitiv1 : {a b : Bool} → (f : (a ≡ false) → (b ≡ false)) → (b ≡ true) → (a ≡ true)
-    kontrapozitiv1 {true}  f pb = refl
-    kontrapozitiv1 {false} f pb rewrite f refl = pb
-
-    kontrapozitiv2 : {a b : Bool} → (f : (a ≡ true) → (b ≡ true)) → (b ≡ false) → (a ≡ false)
-    kontrapozitiv2 {false} f pb = refl
-    kontrapozitiv2 {true} f pb rewrite f refl = pb
-
-    kontrapozitiv3 : {a b : Bool} → (f : (a ≡ true) → (b ≡ false)) → (b ≡ true) → (a ≡ false)
-    kontrapozitiv3 {false} f pb = refl
-    kontrapozitiv3 {true} f pb rewrite f refl = sym pb
-
-    kontrapozitiv4 : {a b : Bool} → (f : (a ≡ false) → (b ≡ true)) → (b ≡ false) → (a ≡ true)
-    kontrapozitiv4 {true} f pb = refl
-    kontrapozitiv4 {false} f pb rewrite f refl = sym pb
 
     mutual
         infixr 10 _∷_d_
@@ -193,7 +212,7 @@ module Atom (Atom : Set)
     disjunktnost = {!   !}
 
     disjunktnost2 : {Γ : Context} → (M : TermInContext Γ) → (x : Atom) → (s : (x ∈ Nosilec.vezane (supp M)) ≡ true) → ((x ∈d Nosilec.proste (supp M)) ≡ false)
-    disjunktnost2 = {!   !}
+    disjunktnost2 {Γ} M x s = kontrapozitiv3 (disjunktnost {Γ} M x) s
 
     record Par : Set where
         constructor _,_
@@ -237,18 +256,26 @@ module Atom (Atom : Set)
     kompozicijaZInverzomZDesne : {a : Atom} → {π : Perm} → (_==_ a (_preslika_ π (_preslika_ (inverz π) a)) ≡ true)
     kompozicijaZInverzomZDesne = {!   !}
 
+    mutual
+            
+        _delujeNaKontekstu_ : Perm → Context → Context
+        _delujeNaKontekstu_ π []d = []d
+        _delujeNaKontekstu_ π (l ∷ x d p) = (π delujeNaKontekstu l) ∷ (π preslika x) d (aux2 {x} {l} {π} p)
 
-    _actsOnContext_ : Perm → Context → Context
-    _actsOnContext_ π []d = []d
-    _actsOnContext_ π (l ∷ x d p) = {!   !}
+        aux1 : {x : Atom} → {l : DistinctList} → {π : Perm} → (((π preslika x) ∈d (π delujeNaKontekstu l)) ≡ true) → ((x ∈d l) ≡ true)
+        aux1 = {!   !}
 
-    -- map
+        aux2 : {x : Atom} → {l : DistinctList} → {π : Perm} → (s : (x ∈d l) ≡ false) → (((π preslika x) ∈d (π delujeNaKontekstu l)) ≡ false)
+        aux2 {x} {l} {π} s = kontrapozitiv2 (aux1 {x} {l} {π}) s
+
+    -- map za distinct list (tega verjetno ne bomo rabili, ker je delujeNaKontekstu že točno to)
+    preslikaDSeznam : (f : Atom → Atom) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → DistinctList → DistinctList
+    preslikaDSeznam f l = {!   !}
+
+    -- map za list
     preslikaSeznam : (f : Atom → Atom) → List Atom → List Atom
     preslikaSeznam f []       = []
     preslikaSeznam f (b ∷ rs) = f b ∷ (preslikaSeznam f rs)
-
-    preslikaDSeznam : (f : Atom → Atom) → DistinctList → DistinctList
-    preslikaDSeznam f l = {!   !}
 
 
     obstojInverzaZaPermutacijeNaKontekstih : {a b : Atom} → {π : Perm} → (_preslika_ π a ≡ b) → (_preslika_ (inverz π) b ≡ a)
@@ -258,60 +285,13 @@ module Atom (Atom : Set)
     enoličnostInverzaZaPermutacijeNaKontekstih p = {!   !}
 
 
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZLeve : {Γ : Context} → {π : Perm} → (Γ ==d (_actsOnContext_ (inverz π) (_actsOnContext_ π Γ)) ≡ true)
+    kompozicijaZInverzomZaPermutacijeNaKontekstihZLeve : {Γ : Context} → {π : Perm} → (Γ ==d (_delujeNaKontekstu_ (inverz π) (_delujeNaKontekstu_ π Γ)) ≡ true)
     kompozicijaZInverzomZaPermutacijeNaKontekstihZLeve = {!  !} 
 
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZDesne : {Γ : Context} → {π : Perm} → (Γ ==d (_actsOnContext_ π (_actsOnContext_ (inverz π) Γ)) ≡ true)
+    kompozicijaZInverzomZaPermutacijeNaKontekstihZDesne : {Γ : Context} → {π : Perm} → (Γ ==d (_delujeNaKontekstu_ π (_delujeNaKontekstu_ (inverz π) Γ)) ≡ true)
     kompozicijaZInverzomZaPermutacijeNaKontekstihZDesne = {!  !} 
 
 
-    kongruentnostVsebovanostiZaDistinctList : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → 
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ true) → 
-        (_∈d_ (f a) (preslikaDSeznam f l) ≡ true)
-    kongruentnostVsebovanostiZaDistinctList = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList2 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → 
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ false) → 
-        (_∈d_ (f a) (preslikaDSeznam f l) ≡ false)
-    kongruentnostVsebovanostiZaDistinctList2 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList3 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → 
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f l) ≡ true) →
-        (_∈d_ a l ≡ true)
-    kongruentnostVsebovanostiZaDistinctList3 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList4 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → 
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f l) ≡ false) →
-        (_∈d_ a l ≡ false)
-    kongruentnostVsebovanostiZaDistinctList4 = {!   !}
 
     ------------
 
