@@ -6,7 +6,7 @@ open import Data.Bool.Base
 open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym)
 open import Relation.Nullary  -- za dec
 
-
+open import Data.Empty using (⊥-elim)
 -- navaden ∈ za liste
 -- open import Data.List.Membership.Propositional
 
@@ -58,8 +58,8 @@ c = ?
 
 data ⊥ : Set where
 
-⊥-elim : {A : Set} → ⊥ → A
-⊥-elim ()
+⊥-elim2 : {A : Set} → ⊥ → A
+⊥-elim2 ()
 
 absurdizem : false ≡ true → ⊥
 absurdizem ()
@@ -135,6 +135,16 @@ module Atom (Atom : Set)
     _==_ x y = Dec→Bool (_≟_ x y)
 
 
+    ==-sym : {a b : Atom} → (_==_ a b ≡ _==_ b a)
+    ==-sym {a} {b} with a ≟ b in eq | b ≟ a in eq2
+    ... | yes _ | yes _ = refl
+    ... | no  _ | no  _ = refl
+    ... | yes p | no np = ⊥-elim (np (sym p))
+    ... | no np | yes p = ⊥-elim (np (sym p))
+
+    ==-false-sym : {a b : Atom} → (_==_ a b ≡ false) → (_==_ b a ≡ false)
+    ==-false-sym {a} {b} p rewrite sym (==-sym {a} {b}) = p
+
     ∧-false-from-left2 : {a b x y : Atom} → (_==_ b y ≡ false) → (_==_ b y ∧ _==_ a x) ≡ false
     ∧-false-from-left2 p = ∧-false-from-left p
 
@@ -155,6 +165,9 @@ module Atom (Atom : Set)
         _∈d_ n []d = false
         _∈d_ n (l ∷ m d p) = (_==_ n m) ∨ (n ∈d l)
     
+    -- dodaj : (Γ : Context) → (x : Atom) → (p : (x ∈d Γ) ≡ false) → Context
+    -- dodaj Γ x p = Γ ∷ x d p
+
     -- enakost distinct listov
     _==d_ : (Γ : DistinctList) → (Γ' : DistinctList) → Bool
     _==d_ []d []d = true
@@ -217,7 +230,7 @@ module Atom (Atom : Set)
         helperino : (x y : Atom) → (l : DistinctList) → ((y ∈d l) ≡ false) → ((y ∈d (remove x l)) ≡ false)
         helperino x y []d q = q
         helperino x y (zs ∷ z d p) q with (_==_ y z) in eq
-        ... | true rewrite eq = ⊥-elim (absurdizem2 q)
+        ... | true rewrite eq = ⊥-elim2 (absurdizem2 q)
         ... | false with (_==_ z x)
         ...     | true rewrite eq = ∨-false-from-right q
         ...     | false = 
@@ -226,7 +239,8 @@ module Atom (Atom : Set)
                     brr = q
                 in
                     ∨-false eq (helperino x y zs brr)
-    
+
+            
     Nosilec = List Atom
 
     supp_ : {Γ : Context} → TermInContext Γ → Nosilec
@@ -241,7 +255,7 @@ module Atom (Atom : Set)
             x : Atom
             y : Atom
     
-        
+    
     Perm = List Par
     
     inverz : (π : Perm) → Perm
@@ -323,7 +337,7 @@ module Atom (Atom : Set)
             {!   !}
 
     bbb : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a : Atom) (l : DistinctList) → (_∈d_ a l ≡ true) → (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
-    bbb f kong inj a []d p = ⊥-elim (absurdizem p)
+    bbb f kong inj a []d p = ⊥-elim2 (absurdizem p)
     bbb f kong inj a (xs ∷ x d q) p with (_==_ a x) in eq
     ... | true = map-preserves-head2 f kong inj a x xs q {eq}
     ... | false =
@@ -394,8 +408,22 @@ module Atom (Atom : Set)
     all p [] = true
     all p (x ∷ xs) = p x ∧ all p xs
 
+    presek : (A : List Atom) → (B : List Atom) → Context
+    presek = {!   !}
+
+    vsebovanostVPreseku : (A : List Atom) → (B : List Atom) → (Γ : Context) → Bool  -- če je presek od A in B vsebovan v Gami
+    vsebovanostVPreseku = {!   !}
 
     infix 5 _#_g_
+
+
+    data _#_/_ {A B : Context} : (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → Set where
+        -- baseCase : {M : TermInContext A} → {N : TermInContext B} → (M # N / (presek (supp M) (supp N)))
+        -- induktivno : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (M # N / Γ) → (a : Atom) → (p : (a ∈d Γ) ≡ false) → (M # N / (Γ ∷ a d p))
+        
+        ustvari : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (vsebovanostVPreseku (toList A) (toList B) Γ ≡ true) → (M # N / Γ)
+        
+        -- non-empty : {m : A} {l : DistinctList A} → (n ∉d l) → (p : m ∉d l) → ¬(n ≡ m) → n ∉d (l ∷ m d p)
 
     -- separatedness relation
     _#_g_ : {A B : Context} → TermInContext A → TermInContext B → (Γ : Context) → Bool
@@ -406,17 +434,24 @@ module Atom (Atom : Set)
         ) 
         (supp M)
 
-    separiranostSimetrična : {A B : Context} → (Γ : Context) → (M : TermInContext A) → (N : TermInContext B) → (p : M # N g Γ ≡ true) → (N # M g Γ ≡ true)
-    separiranostSimetrična Γ M N = {!   !}
+    separiranostSimetrična : {A B : Context} → (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → (p : M # N g Γ ≡ true) → (N # M g Γ ≡ true)
+    separiranostSimetrična M N Γ = {!   !}
+
+    separiranost2Simetrična : {A B : Context} → (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → (p : M # N / Γ) → (N # M / Γ)
+    separiranost2Simetrična M N Γ = {!   !}
 
     -- posebna oznaka, če sta oba izraza nad istim kontekstom Γ, glede na katerega gledamo relacijo
     _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Bool
     _⊢_#_ Γ M N = M # N g Γ
 
-    substitucija : {Γ : Context} → (N : TermInContext Γ) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ x d p)) → {s : M # N g Γ ≡ true} → (TermInContext Γ)
+    separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N ≡ true) → (Γ ⊢ N # M ≡ true)
+    separiranostSimetrična2 Γ M N = separiranostSimetrična M N Γ
+
+    substitucija : {Γ : Context} → (N : TermInContext Γ) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ x d p)) → {s : M # N / Γ} → (TermInContext Γ)
     substitucija {Γ} N x {p} M {s} = {!   !}
 
-    _[_/_] : {Γ : Context} → {a : Atom} → {p : (a ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ a d p)) → (N : TermInContext Γ) → (x : Atom) → {q : _==_ a x ≡ true} → {s : M # N g Γ ≡ true} → (TermInContext Γ)
+
+    _[_/_] : {Γ : Context} → {a : Atom} → {p : (a ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ a d p)) → (N : TermInContext Γ) → (x : Atom) → {q : _==_ a x ≡ true} → {s : M # N / Γ} → (TermInContext Γ)
     _[_/_] {Γ} {a} {p} M N x {q} {s} =
         let
             p' : (x ∈d Γ) ≡ false  -- uporabi q, ki je tipa _==_ a x ≡ true, in p
@@ -425,7 +460,7 @@ module Atom (Atom : Set)
             M' : TermInContext (Γ ∷ x d p')
             M' = {!   !}
 
-            s' : M' # N g Γ ≡ true
+            s' : M' # N / Γ
             s' = {!   !}
         in
-            substitucija {Γ} N x {p'} M' {s'} 
+            substitucija {Γ} N x {p'} M' {s'}
