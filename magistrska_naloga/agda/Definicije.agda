@@ -1,4 +1,5 @@
-module Definicije where
+module nove_permutacije where
+
 
 open import Agda.Builtin.List
 open import Data.Bool.Base
@@ -225,11 +226,11 @@ module Atom (Atom : Set)
         remove x []d = []d
         remove x (ys ∷ y d p) with (_==_ y x)
         ... | true = ys
-        ... | false = (remove x ys) ∷ y d (helperino x y ys p) 
+        ... | false = (remove x ys) ∷ y d (pomoznaFunkcija x y ys p) 
 
-        helperino : (x y : Atom) → (l : DistinctList) → ((y ∈d l) ≡ false) → ((y ∈d (remove x l)) ≡ false)
-        helperino x y []d q = q
-        helperino x y (zs ∷ z d p) q with (_==_ y z) in eq
+        pomoznaFunkcija : (x y : Atom) → (l : DistinctList) → ((y ∈d l) ≡ false) → ((y ∈d (remove x l)) ≡ false)
+        pomoznaFunkcija x y []d q = q
+        pomoznaFunkcija x y (zs ∷ z d p) q with (_==_ y z) in eq
         ... | true rewrite eq = ⊥-elim2 (absurdizem2 q)
         ... | false with (_==_ z x)
         ...     | true rewrite eq = ∨-false-from-right q
@@ -238,9 +239,18 @@ module Atom (Atom : Set)
                     brr : (y ∈d zs) ≡ false
                     brr = q
                 in
-                    ∨-false eq (helperino x y zs brr)
+                    ∨-false eq (pomoznaFunkcija x y zs brr)
 
-            
+    record NomSet (A : Set) : Set where
+        field
+            setof : A
+            supp : A → List Atom
+    
+    data NomTermInContext : Context → Set where
+        `_ : {Γ : Context} → (x : Atom) → {(x ∈d Γ) ≡ true} → NomTermInContext Γ
+        _·_ : {Γ : Context} → NomTermInContext Γ → NomTermInContext Γ → NomTermInContext Γ
+        ƛ_⇒_ : {Γ : Context} → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (NomTermInContext (Γ ∷ x d p)) → NomTermInContext Γ
+
     Nosilec = List Atom
 
     supp_ : {Γ : Context} → TermInContext Γ → Nosilec
@@ -336,69 +346,6 @@ module Atom (Atom : Set)
             -- ∨-trueˡ' head
             {!   !}
 
-    bbb : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a : Atom) (l : DistinctList) → (_∈d_ a l ≡ true) → (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
-    bbb f kong inj a []d p = ⊥-elim2 (absurdizem p)
-    bbb f kong inj a (xs ∷ x d q) p with (_==_ a x) in eq
-    ... | true = map-preserves-head2 f kong inj a x xs q {eq}
-    ... | false =
-        let
-            tail : (a ∈d xs) ≡ true
-            -- tail = ∨-false-elim refl p
-            tail = {!   !}
-
-            ih : ((f a) ∈d (preslikaDSeznam f inj xs)) ≡ true
-            ih = bbb f kong inj a xs tail
-        in
-            {!   !}
-            --∨-trueʳ ih
-
-    kongruentnostVsebovanostiZaDistinctList : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ true) → 
-        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
-    kongruentnostVsebovanostiZaDistinctList = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList2 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ false) → 
-        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ false)
-    kongruentnostVsebovanostiZaDistinctList2 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList3 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ true) →
-        (_∈d_ a l ≡ true)
-    kongruentnostVsebovanostiZaDistinctList3 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList4 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ false) →
-        (_∈d_ a l ≡ false)
-    kongruentnostVsebovanostiZaDistinctList4 = {!   !}
 
     ------------
 
@@ -415,6 +362,7 @@ module Atom (Atom : Set)
     vsebovanostVPreseku = {!   !}
 
     infix 5 _#_g_
+    infix 5 _#_/_
 
 
     data _#_/_ {A B : Context} : (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → Set where
