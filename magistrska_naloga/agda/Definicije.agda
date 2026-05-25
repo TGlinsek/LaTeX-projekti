@@ -1,4 +1,4 @@
-module nove_permutacije where
+module Definicije where
 
 
 open import Agda.Builtin.List
@@ -10,6 +10,9 @@ open import Relation.Nullary  -- za dec
 open import Data.Empty using (⊥-elim)
 -- navaden ∈ za liste
 -- open import Data.List.Membership.Propositional
+
+open import Data.Product using (_×_; _,_; proj₁; proj₂)
+open import Data.List using (List; []; _∷_; _++_)
 
 
 _⇒_ : Bool → Bool → Bool
@@ -241,22 +244,42 @@ module Atom (Atom : Set)
                 in
                     ∨-false eq (pomoznaFunkcija x y zs brr)
 
-    record NomSet (A : Set) : Set where
-        field
-            setof : A
-            supp : A → List Atom
-    
-    data NomTermInContext : Context → Set where
-        `_ : {Γ : Context} → (x : Atom) → {(x ∈d Γ) ≡ true} → NomTermInContext Γ
-        _·_ : {Γ : Context} → NomTermInContext Γ → NomTermInContext Γ → NomTermInContext Γ
-        ƛ_⇒_ : {Γ : Context} → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (NomTermInContext (Γ ∷ x d p)) → NomTermInContext Γ
 
+    record NomSet : Set₁ where
+        field
+            USet : Set
+            supp : USet → List Atom
+    
+    {-
+    fst : {A B : Set} → A × B → A
+    fst (a , b) = a
+
+    snd : {A B : Set} → A × B → B
+    snd (a , b) = b
+    -}
+    
+    prod : NomSet → NomSet → NomSet
+    prod A B = record {
+            USet = (NomSet.USet A) × (NomSet.USet B);
+            supp = (λ (a , b) → concat (NomSet.supp A a) (NomSet.supp B b))
+        }
+    
+    
+    
     Nosilec = List Atom
 
     supp_ : {Γ : Context} → TermInContext Γ → Nosilec
     supp_ {Γ} (` x) = toList Γ
     supp_ {Γ} (M · N) = concat (supp M) (supp N)
     supp_ {Γ} (ƛ x ⇒ M) = supp M
+
+
+    NomTermInContext : (Γ : Context) → NomSet
+    NomTermInContext Γ = (
+        record { 
+            USet = TermInContext Γ;
+            supp = supp_ {Γ}
+        })
 
 
     record Par : Set where
@@ -346,6 +369,69 @@ module Atom (Atom : Set)
             -- ∨-trueˡ' head
             {!   !}
 
+    bbb : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a : Atom) (l : DistinctList) → (_∈d_ a l ≡ true) → (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
+    bbb f kong inj a []d p = ⊥-elim2 (absurdizem p)
+    bbb f kong inj a (xs ∷ x d q) p with (_==_ a x) in eq
+    ... | true = map-preserves-head2 f kong inj a x xs q {eq}
+    ... | false =
+        let
+            tail : (a ∈d xs) ≡ true
+            -- tail = ∨-false-elim refl p
+            tail = {!   !}
+
+            ih : ((f a) ∈d (preslikaDSeznam f inj xs)) ≡ true
+            ih = bbb f kong inj a xs tail
+        in
+            {!   !}
+            --∨-trueʳ ih
+
+    kongruentnostVsebovanostiZaDistinctList : (f : Atom → Atom) → 
+        (==-kong : 
+            (a x : Atom) → 
+            (_==_ a x ≡ true) → 
+            (_==_ (f a) (f x) ≡ true)
+        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
+        (a : Atom) → 
+        (l : Context) → 
+        (p : _∈d_ a l ≡ true) → 
+        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
+    kongruentnostVsebovanostiZaDistinctList = {!   !}
+
+    kongruentnostVsebovanostiZaDistinctList2 : (f : Atom → Atom) → 
+        (==-kong : 
+            (a x : Atom) → 
+            (_==_ a x ≡ true) → 
+            (_==_ (f a) (f x) ≡ true)
+        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
+        (a : Atom) → 
+        (l : Context) → 
+        (p : _∈d_ a l ≡ false) → 
+        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ false)
+    kongruentnostVsebovanostiZaDistinctList2 = {!   !}
+
+    kongruentnostVsebovanostiZaDistinctList3 : (f : Atom → Atom) → 
+        (==-kong : 
+            (a x : Atom) → 
+            (_==_ a x ≡ true) → 
+            (_==_ (f a) (f x) ≡ true)
+        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
+        (a : Atom) → 
+        (l : Context) → 
+        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ true) →
+        (_∈d_ a l ≡ true)
+    kongruentnostVsebovanostiZaDistinctList3 = {!   !}
+
+    kongruentnostVsebovanostiZaDistinctList4 : (f : Atom → Atom) → 
+        (==-kong : 
+            (a x : Atom) → 
+            (_==_ a x ≡ true) → 
+            (_==_ (f a) (f x) ≡ true)
+        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
+        (a : Atom) → 
+        (l : Context) → 
+        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ false) →
+        (_∈d_ a l ≡ false)
+    kongruentnostVsebovanostiZaDistinctList4 = {!   !}
 
     ------------
 
@@ -358,18 +444,29 @@ module Atom (Atom : Set)
     presek : (A : List Atom) → (B : List Atom) → Context
     presek = {!   !}
 
-    vsebovanostVPreseku : (A : List Atom) → (B : List Atom) → (Γ : Context) → Bool  -- če je presek od A in B vsebovan v Gami
+    vsebovanostVPreseku : (A : List Atom) → (B : List Atom) → (Γ : List Atom) → Bool  -- če je presek od A in B vsebovan v Gami
     vsebovanostVPreseku = {!   !}
+
+    ---------------------------
+
+    infix 5 _#_/G_
+    infix 5 _#_/g_
+
+    _#_/G_ : {A B C : NomSet} → (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Bool  -- bool verzija
+    _#_/G_ {A} {B} {C} a b c = vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c)
+
+    data _#_/g_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
+        konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → a # b /g c
+    
 
     infix 5 _#_g_
     infix 5 _#_/_
-
 
     data _#_/_ {A B : Context} : (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → Set where
         -- baseCase : {M : TermInContext A} → {N : TermInContext B} → (M # N / (presek (supp M) (supp N)))
         -- induktivno : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (M # N / Γ) → (a : Atom) → (p : (a ∈d Γ) ≡ false) → (M # N / (Γ ∷ a d p))
         
-        ustvari : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (vsebovanostVPreseku (toList A) (toList B) Γ ≡ true) → (M # N / Γ)
+        ustvari : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (vsebovanostVPreseku (supp M) (supp N) (toList Γ) ≡ true) → (M # N / Γ)
         
         -- non-empty : {m : A} {l : DistinctList A} → (n ∉d l) → (p : m ∉d l) → ¬(n ≡ m) → n ∉d (l ∷ m d p)
 
