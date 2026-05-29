@@ -294,9 +294,19 @@ module Atom (Atom : Set)
 
     NomTermInContext : (Γ : Context) → NomSet
     NomTermInContext Γ = (
-        record { 
+        record {
             USet = TermInContext Γ;
             supp = supp_ {Γ}
+        })
+    
+    suppp_ : (Γ : Context) → Nosilec
+    suppp_ Γ = toList Γ
+
+    NomContext : NomSet
+    NomContext = (
+        record {
+            USet = Context;
+            supp = toList
         })
 
 
@@ -386,7 +396,7 @@ module Atom (Atom : Set)
         in
             -- ∨-trueˡ' head
             {!   !}
-    {-
+    
     bbb : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a : Atom) (l : DistinctList) → (_∈d_ a l ≡ true) → (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
     bbb f kong inj a []d p = ⊥-elim2 (absurdizem p)
     bbb f kong inj a (xs ∷ x d q) p with (_==_ a x) in eq
@@ -402,7 +412,7 @@ module Atom (Atom : Set)
         in
             {!   !}
             --∨-trueʳ ih
-    -}
+    
     
     kongruentnostVsebovanostiZaDistinctList : (f : Atom → Atom) → 
         (==-kong : 
@@ -460,9 +470,6 @@ module Atom (Atom : Set)
     all p [] = true
     all p (x ∷ xs) = p x ∧ all p xs
 
-    presek : (A : List Atom) → (B : List Atom) → Context
-    presek = {!   !}
-
     vsebovanostVPreseku : (A : List Atom) → (B : List Atom) → (Γ : List Atom) → Bool  -- če je presek od A in B vsebovan v Gami
     vsebovanostVPreseku A B Γ = all (
             λ x → (
@@ -480,7 +487,7 @@ module Atom (Atom : Set)
     _#_/G_ {A} {B} {C} a b c = vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c)
 
     data _#_/g_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
-        konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → a # b /g c
+        konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b /g c)
     
 
     infix 5 _#_g_
@@ -490,7 +497,7 @@ module Atom (Atom : Set)
         -- baseCase : {M : TermInContext A} → {N : TermInContext B} → (M # N / (presek (supp M) (supp N)))
         -- induktivno : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (M # N / Γ) → (a : Atom) → (p : (a ∈d Γ) ≡ false) → (M # N / (Γ ∷ a d p))
         
-        ustvari : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (vsebovanostVPreseku (supp M) (supp N) (toList Γ) ≡ true) → (M # N / Γ)
+        ustvari : {M : TermInContext A} → {N : TermInContext B} → {Γ : Context} → (vsebovanostVPreseku (supp M) (supp N) (toList Γ) ≡ true) → (M # N / Γ)
         
         -- non-empty : {m : A} {l : DistinctList A} → (n ∉d l) → (p : m ∉d l) → ¬(n ≡ m) → n ∉d (l ∷ m d p)
 
@@ -516,52 +523,5 @@ module Atom (Atom : Set)
     separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N ≡ true) → (Γ ⊢ N # M ≡ true)
     separiranostSimetrična2 Γ M N = separiranostSimetrična M N Γ
 
-    substitucija : {Γ : Context} → (N : TermInContext Γ) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ x d p)) → {s : M # N /g Γ} → (TermInContext Γ)
+    substitucija : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → (TermInContext Γ)
     substitucija {Γ} N x {p} M {s} = {!   !}
-
-    rename : {Γ : Context} → {a x : Atom} → (q : _==_ a x ≡ true) → {p : a ∈d Γ ≡ false} → {p' : x ∈d Γ ≡ false} → TermInContext (Γ ∷ a d p) → TermInContext (Γ ∷ x d p')
-    rename q M rewrite ==-to-≡ q = M
-
-    ctxEq : {Γ : Context} → {a x : Atom} → (q : _==_ a x ≡ true) → (p : (a ∈d Γ) ≡ false) → (p' : (x ∈d Γ) ≡ false) → Γ ∷ a d p ≡ Γ ∷ x d p'
-    ctxEq {Γ} {a} {x} q p p' with (==-to-≡ q)
-    ... | refl = refl
-
-    supp-subst : {a x : Atom} {q : _==_ a x ≡ true} {Γ : Context} {p : (a ∈d Γ) ≡ false} {p' : (x ∈d Γ) ≡ false} {M : TermInContext (Γ ∷ a d p)} → (supp (subst TermInContext (ctxEq q p p') M) ≡ supp M)
-    supp-subst = {!   !}
-    
-    transport-~ : {a x : Atom} {q : _==_ a x ≡ true} {Γ : Context} {p : (a ∈d Γ) ≡ false} {p' : (x ∈d Γ) ≡ false} {M : TermInContext (Γ ∷ a d p)} {N : TermInContext Γ} → (M # N /g Γ) → {M' : TermInContext (Γ ∷ x d p')} → ((subst TermInContext (ctxEq q p p') M) ≡ M') → (M' # N /g Γ)
-    -- transport-~ {a} {x} {q} {Γ} {p} {p'} {M} {N} r {M'} eq with ctxEq q p p'
-    -- ... | refl rewrite (eq) = {!   !}
-    -- transport-~ {a} {x} {q} {Γ} {p} {p'} {M} {N} (konstrukt Γ M N prf) {M'} eq rewrite supp-subst (ctxEq q p p') M = konstrukt Γ M' N prf
-    transport-~ = {!   !}
-    
-    _[_/_] : {Γ : Context} → {a : Atom} → {p : (a ∈d Γ) ≡ false} → (M : TermInContext (Γ ∷ a d p)) → (N : TermInContext Γ) → (x : Atom) → {q : _==_ a x ≡ true} → {s : M # N /g Γ} → (TermInContext Γ)
-    _[_/_] {Γ} {a} {p} M N x {q} {s} =
-        let
-            p' : (x ∈d Γ) ≡ false  -- uporabi q, ki je tipa _==_ a x ≡ true, in p
-            p' = subst (λ t → t ∈d Γ ≡ false) (==-to-≡ q) p
-
-            M' : TermInContext (Γ ∷ x d p')
-            M' = subst TermInContext (ctxEq q p p') M
-
-            M'' : TermInContext (Γ ∷ x d p') -- alternativen način za M'
-            M'' = rename q {p} {p'} M
-
-            --s' : M' # N /g Γ
-            --s' = subst (λ Δ → subst TermInContext Δ (M # N /g Γ)) (sym ctxEq) s
-            
-            {-
-            helper : {Γ : Context} → (M # N /g Γ) → ((subst TermInContext (sym (==-to-≡ q)) M) # N /g Γ)
-            helper r = r
-
-            r' : M' # N /g Γ
-            r' = helper s
-            -}
-
-
-            
-            s' : M' # N /g Γ
-            -- s' = subst (λ m → m # N /g Γ) q s
-            s' = transport-~ {a} {x} {q} {Γ} {p} {p'} {M} {N} s {M'} refl
-        in
-            substitucija {Γ} N x {p'} M' {s'}
