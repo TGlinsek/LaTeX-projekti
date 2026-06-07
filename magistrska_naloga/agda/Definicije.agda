@@ -179,7 +179,7 @@ module Atom (Atom : Set)
 
         data DistinctList : Set where
             []d  : DistinctList
-            _∷_d_ : (l : DistinctList) → (a : Atom) → .((a ∈d l) ≡ false) → DistinctList
+            _∷_d_ : (l : DistinctList) → (a : Atom) → ((a ∈d l) ≡ false) → DistinctList
     
         infix 9 _∈d_
         
@@ -480,48 +480,20 @@ module Atom (Atom : Set)
 
     ---------------------------
 
-    infix 5 _#_/G_
+    
     infix 5 _#_/g_
 
-    _#_/G_ : {A B C : NomSet} → (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Bool  -- bool verzija
-    _#_/G_ {A} {B} {C} a b c = vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c)
 
     data _#_/g_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
         konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b /g c)
     
 
-    infix 5 _#_g_
-    infix 5 _#_/_
-
-    data _#_/_ {A B : Context} : (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → Set where
-        -- baseCase : {M : TermInContext A} → {N : TermInContext B} → (M # N / (presek (supp M) (supp N)))
-        -- induktivno : {Γ : Context} → {M : TermInContext A} → {N : TermInContext B} → (M # N / Γ) → (a : Atom) → (p : (a ∈d Γ) ≡ false) → (M # N / (Γ ∷ a d p))
-        
-        ustvari : {M : TermInContext A} → {N : TermInContext B} → {Γ : Context} → (vsebovanostVPreseku (supp M) (supp N) (toList Γ) ≡ true) → (M # N / Γ)
-        
-        -- non-empty : {m : A} {l : DistinctList A} → (n ∉d l) → (p : m ∉d l) → ¬(n ≡ m) → n ∉d (l ∷ m d p)
-
-    -- separatedness relation
-    _#_g_ : {A B : Context} → TermInContext A → TermInContext B → (Γ : Context) → Bool
-    _#_g_ {A} {B} M N Γ = all (
-            λ x → (
-                (x ∈ (supp N)) ⇒ (_∈d_ x Γ)
-            )
-        ) 
-        (supp M)
-
-    separiranostSimetrična : {A B : Context} → (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → (p : M # N g Γ ≡ true) → (N # M g Γ ≡ true)
-    separiranostSimetrična M N Γ = {!   !}
-
-    separiranost2Simetrična : {A B : Context} → (M : TermInContext A) → (N : TermInContext B) → (Γ : Context) → (p : M # N / Γ) → (N # M / Γ)
-    separiranost2Simetrična M N Γ = {!   !}
-
     -- posebna oznaka, če sta oba izraza nad istim kontekstom Γ, glede na katerega gledamo relacijo
-    _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Bool
-    _⊢_#_ Γ M N = M # N g Γ
+    _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Set
+    _⊢_#_ Γ M N = {!   !}  -- M # N /g Γ
 
-    separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N ≡ true) → (Γ ⊢ N # M ≡ true)
-    separiranostSimetrična2 Γ M N = separiranostSimetrična M N Γ
+    separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N) → (Γ ⊢ N # M)
+    separiranostSimetrična2 Γ M N = {!   !}
 
     substitucija : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → (TermInContext Γ)
     substitucija {Γ} N x {p} M {s} = {!   !}
