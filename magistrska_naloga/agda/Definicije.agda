@@ -32,8 +32,6 @@ helper2 {true}  {b} p pa = p
 helper2 {false} {b} p ()
 
 
-b : {a b : Bool} → ((a ≡ true) → (b ≡ true)) → ((b ≡ true) → (a ≡ true)) → ((a ⇒ b) ∧ (b ⇒ a) ≡ true)
-b = {!   !}
 
 {-
 c : {a b : Bool} → ((a ⇒ b) ≡ true) → ((b ⇒ a) ≡ true) → ((a ≡ true) → (b ≡ true)) × ((b ≡ true) → (a ≡ true))
@@ -133,14 +131,13 @@ kontrapozitiv4 : {a b : Bool} → (f : (a ≡ false) → (b ≡ true)) → (b �
 kontrapozitiv4 {true} f pb = refl
 kontrapozitiv4 {false} f pb rewrite f refl = sym pb
 
-nnnn : {a b : Bool} → (p : a ≡ true) → (q : b ≡ true) → (a ∧ b ≡ true)
-nnnn = {!   !}
 
-nnnn2 : {a b : Bool} → (a ∧ b ≡ true) → (a ≡ true)
-nnnn2 = {!   !}
 
-nnnn3 : {a b : Bool} → (a ∧ b ≡ true) → (b ≡ true)
-nnnn3 = {!   !}
+
+
+
+
+------ Atom ------
 
 module Atom (Atom : Set)
     (_≟_ : (x y : Atom) → Dec (x ≡ y))
@@ -278,18 +275,14 @@ module Atom (Atom : Set)
                     ∨-false eq (pomoznaFunkcija x y zs brr)
 
 
+    ---------------- NomSet ------------------
+
+
     record NomSet : Set₁ where
         field
             USet : Set
             supp : USet → List Atom
     
-    {-
-    fst : {A B : Set} → A × B → A
-    fst (a , b) = a
-
-    snd : {A B : Set} → A × B → B
-    snd (a , b) = b
-    -}
     
     prod : NomSet → NomSet → NomSet
     prod A B = record {
@@ -314,8 +307,6 @@ module Atom (Atom : Set)
             supp = supp_ {Γ}
         })
     
-    suppp_ : (Γ : Context) → Nosilec
-    suppp_ Γ = toList Γ
 
     NomContext : NomSet
     NomContext = (
@@ -352,136 +343,9 @@ module Atom (Atom : Set)
     ...     | false = xs preslika a
 
 
-    -- ali pa "JeKongruentna"
-    permutacijaJeEnolična : {a : Atom} → {b : Atom} → {π : Perm} → (a ≡ b) → ((_preslika_ π a) ≡ (_preslika_ π b))
-    permutacijaJeEnolična refl = refl
-
-    permutacijaJeInjektivna : {a : Atom} → {b : Atom} → {π : Perm} → ((_preslika_ π a) ≡ (_preslika_ π b)) → (a ≡ b)
-    permutacijaJeInjektivna p = {!   !}
 
 
-    obstojInverza : {a b : Atom} → {π : Perm} → (_preslika_ π a ≡ b) → (_preslika_ (inverz π) b ≡ a)
-    obstojInverza p = {!   !}
-
-    enoličnostInverza : {a b : Atom} → {π : Perm} → (_preslika_ (inverz π) b ≡ a) → (_preslika_ π a ≡ b)
-    enoličnostInverza p = {!   !}
-
-
-    kompozicijaZInverzomZLeve : {a : Atom} → {π : Perm} → (_==_ a (_preslika_ (inverz π) (_preslika_ π a)) ≡ true)
-    kompozicijaZInverzomZLeve = {!   !}
-
-    kompozicijaZInverzomZDesne : {a : Atom} → {π : Perm} → (_==_ a (_preslika_ π (_preslika_ (inverz π) a)) ≡ true)
-    kompozicijaZInverzomZDesne = {!   !}
-
-    mutual
-            
-        _delujeNaKontekstu_ : Perm → Context → Context
-        _delujeNaKontekstu_ π []d = []d
-        _delujeNaKontekstu_ π (l ∷ x d p) = (π delujeNaKontekstu l) ∷ (π preslika x) d (aux2 {x} {l} {π} p)
-
-        aux1 : {x : Atom} → {l : DistinctList} → {π : Perm} → (((π preslika x) ∈d (π delujeNaKontekstu l)) ≡ true) → ((x ∈d l) ≡ true)
-        aux1 = {!   !}
-
-        aux2 : {x : Atom} → {l : DistinctList} → {π : Perm} → (s : (x ∈d l) ≡ false) → (((π preslika x) ∈d (π delujeNaKontekstu l)) ≡ false)
-        aux2 {x} {l} {π} s = kontrapozitiv2 (aux1 {x} {l} {π}) s
-
-    -- map za distinct list (tega verjetno ne bomo rabili, ker je delujeNaKontekstu že točno to)
-    preslikaDSeznam : (f : Atom → Atom) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → DistinctList → DistinctList
-    preslikaDSeznam f l = {!   !}
-
-    -- map za list
-    preslikaSeznam : (f : Atom → Atom) → List Atom → List Atom
-    preslikaSeznam f []       = []
-    preslikaSeznam f (b ∷ rs) = f b ∷ (preslikaSeznam f rs)
-
-
-    obstojInverzaZaPermutacijeNaKontekstih : {a b : Atom} → {π : Perm} → (_preslika_ π a ≡ b) → (_preslika_ (inverz π) b ≡ a)
-    obstojInverzaZaPermutacijeNaKontekstih p = {!   !}
-
-    enoličnostInverzaZaPermutacijeNaKontekstih : {a b : Atom} → {π : Perm} → (_preslika_ (inverz π) b ≡ a) → (_preslika_ π a ≡ b)
-    enoličnostInverzaZaPermutacijeNaKontekstih p = {!   !}
-
-
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZLeve : {Γ : Context} → {π : Perm} → (Γ ==d (_delujeNaKontekstu_ (inverz π) (_delujeNaKontekstu_ π Γ)) ≡ true)
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZLeve = {!  !} 
-
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZDesne : {Γ : Context} → {π : Perm} → (Γ ==d (_delujeNaKontekstu_ π (_delujeNaKontekstu_ (inverz π) Γ)) ≡ true)
-    kompozicijaZInverzomZaPermutacijeNaKontekstihZDesne = {!  !} 
-
-
-    map-preserves-head2 : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a x : Atom) (ps : DistinctList) → (pogoj : _∈d_ x ps ≡ false) → {_==_ a x ≡ true} → (_∈d_ (f a) (preslikaDSeznam f inj (ps ∷ x d pogoj)) ≡ true)
-    map-preserves-head2 f kong inj a x ps pogoj {ax≡true} =
-        let
-            head : (_==_ (f a) (f x)) ≡ true
-            head = kong a x ax≡true
-        in
-            -- ∨-trueˡ' head
-            {!   !}
     
-    bbb : (f : Atom → Atom) → (==-kong : (a x : Atom) → (_==_ a x ≡ true) → (_==_ (f a) (f x) ≡ true)) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) → (a : Atom) (l : DistinctList) → (_∈d_ a l ≡ true) → (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
-    bbb f kong inj a []d p = ⊥-elim2 (absurdizem p)
-    bbb f kong inj a (xs ∷ x d q) p with (_==_ a x) in eq
-    ... | true = map-preserves-head2 f kong inj a x xs q {eq}
-    ... | false =
-        let
-            tail : (a ∈d xs) ≡ true
-            -- tail = ∨-false-elim refl p
-            tail = {!   !}
-
-            ih : ((f a) ∈d (preslikaDSeznam f inj xs)) ≡ true
-            ih = bbb f kong inj a xs tail
-        in
-            {!   !}
-            --∨-trueʳ ih
-    
-    
-    kongruentnostVsebovanostiZaDistinctList : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ true) → 
-        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ true)
-    kongruentnostVsebovanostiZaDistinctList = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList2 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ a l ≡ false) → 
-        (_∈d_ (f a) (preslikaDSeznam f inj l) ≡ false)
-    kongruentnostVsebovanostiZaDistinctList2 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList3 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ true) →
-        (_∈d_ a l ≡ true)
-    kongruentnostVsebovanostiZaDistinctList3 = {!   !}
-
-    kongruentnostVsebovanostiZaDistinctList4 : (f : Atom → Atom) → 
-        (==-kong : 
-            (a x : Atom) → 
-            (_==_ a x ≡ true) → 
-            (_==_ (f a) (f x) ≡ true)
-        ) → (inj : (a x : Atom) → (_==_ a x ≡ false) → (_==_ (f a) (f x) ≡ false)) →
-        (a : Atom) → 
-        (l : Context) → 
-        (p : _∈d_ (f a) (preslikaDSeznam f inj l) ≡ false) →
-        (_∈d_ a l ≡ false)
-    kongruentnostVsebovanostiZaDistinctList4 = {!   !}
 
     ------------
 
@@ -502,60 +366,42 @@ module Atom (Atom : Set)
     ---------------------------
 
     
-    infix 5 _#_/g_
+    infix 5 _#_/_
 
 
-    data _#_/g_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
-        konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b /g c)
+    data _#_/_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
+        konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b / c)
     
-    aksiom1 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/g_ {A = a} {B = b} {C = prod c d} x y (z , w))
+    aksiom1 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/_ {A = a} {B = b} {C = prod c d} x y (z , w))
     aksiom1 = {!   !}
 
-    aksiom2 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/g_ {A = a} {B = c} {C = d} x z w)
+    aksiom2 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/_ {A = a} {B = c} {C = d} x z w)
     aksiom2 = {!   !}
 
-    aksiom3 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : (_#_/g_ {A = a} {B = b} {C = prod c d} x y (z , w))) → (s2 : (_#_/g_ {A = a} {B = c} {C = d} x z w)) → (_#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w)
+    aksiom3 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : (_#_/_ {A = a} {B = b} {C = prod c d} x y (z , w))) → (s2 : (_#_/_ {A = a} {B = c} {C = d} x z w)) → (_#_/_ {A = a} {B = prod b c} {C = d} x (y , z) w)
     aksiom3 = {!   !}
-
-    -- posebna oznaka, če sta oba izraza nad istim kontekstom Γ, glede na katerega gledamo relacijo
-    _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Set
-    _⊢_#_ Γ M N = {!   !}  -- M # N /g Γ
-
-    separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N) → (Γ ⊢ N # M)
-    separiranostSimetrična2 Γ M N = {!   !}
     
-    vrne1 : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (_#_/g_ {A = NomAtom} {B = NomTermInContext Γ} {C = NomContext} z M []d)
-    vrne1 = {!   !}
 
-    vrne2 : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (_#_/g_ {A = NomAtom} {B = NomContext} {C = NomContext} z Γ []d)
-    vrne2 = {!   !}
-
-    vrne : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → ((z ∈d Γ) ≡ false)
+    vrne : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → ((z ∈d Γ) ≡ false)
     vrne = {!   !}
 
 
     ∈d-weaken : {Γ : Context} {x z : Atom} → {a : x ∈d Γ ≡ true} → (p : z ∈d Γ ≡ false) → x ∈d (Γ ∷ z d p) ≡ true
     ∈d-weaken {gama} {x} {z} {a} p = ∨-true3 a
 
-
+    
     weaken : {Γ : Context} (z : Atom) {p : z ∈d Γ ≡ false} → (M : TermInContext Γ) → (vsebovanostVPreseku (z ∷ []) (supp_ M) [] ≡ true) → TermInContext (Γ ∷ z d p)
     weaken {Γ} z {p} (`_ {Γ = Γ} x {q = q}) _ = `_ {Γ = Γ ∷ z d p} x {q = ∈d-weaken {Γ = Γ} {x = x} {z = z} {a = q} p}
     -- weaken z {p} (M · N) _ = weaken z {p} M · weaken z {p} N
     weaken z {p} (M · N) _ = {!   !}
     weaken z {p} (ƛ x ⇒ M) _ = {!   !}
 
-    lema : {Γ : NomSet.USet NomContext} → (M : NomSet.USet (NomTermInContext Γ)) → (z : Atom) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (NomSet.USet (NomTermInContext (Γ ∷ z d (vrne Γ z M separiranost))))
+    lema : {Γ : NomSet.USet NomContext} → (M : NomSet.USet (NomTermInContext Γ)) → (z : Atom) → (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (NomSet.USet (NomTermInContext (Γ ∷ z d (vrne Γ z M separiranost))))
     lema = {!   !}
-    {-
-    lemma M z s with M
-    ... | ` x = 
-    ... | M₁ · M₂ = ...
-    ... | ƛ x ⇒ M₁ = ...
-    -}
     
-    substitucija : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → (TermInContext Γ)
+    substitucija : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → (TermInContext Γ)
     substitucija {Γ} N x {p} M {s} = {!   !}
 
     -- namesto splošnega M imamo le lambda abstrakcijo
-    substitucijaNovo : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext Γ} {B = NomTermInContext Γ} {C = NomContext} (ƛ x ⇒ M) N Γ} → (TermInContext Γ)
+    substitucijaNovo : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/_ {A = NomTermInContext Γ} {B = NomTermInContext Γ} {C = NomContext} (ƛ x ⇒ M) N Γ} → (TermInContext Γ)
     substitucijaNovo {Γ} N x {p} M {s} = {!   !} 
