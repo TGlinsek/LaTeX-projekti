@@ -47,6 +47,12 @@ c = ?
 ∨-trueʳ false = refl
 ∨-trueʳ true  = refl
 
+∨-true3 : {b a : Bool} → (g : a ≡ true) → b ∨ a ≡ true
+∨-true3 {b} g rewrite g with b
+... | true  = refl
+... | false = refl
+
+
 ∧-true : true ∧ true ≡ true
 ∧-true = refl
 
@@ -126,6 +132,15 @@ kontrapozitiv3 {true} f pb rewrite f refl = sym pb
 kontrapozitiv4 : {a b : Bool} → (f : (a ≡ false) → (b ≡ true)) → (b ≡ false) → (a ≡ true)
 kontrapozitiv4 {true} f pb = refl
 kontrapozitiv4 {false} f pb rewrite f refl = sym pb
+
+nnnn : {a b : Bool} → (p : a ≡ true) → (q : b ≡ true) → (a ∧ b ≡ true)
+nnnn = {!   !}
+
+nnnn2 : {a b : Bool} → (a ∧ b ≡ true) → (a ≡ true)
+nnnn2 = {!   !}
+
+nnnn3 : {a b : Bool} → (a ∧ b ≡ true) → (b ≡ true)
+nnnn3 = {!   !}
 
 module Atom (Atom : Set)
     (_≟_ : (x y : Atom) → Dec (x ≡ y))
@@ -214,7 +229,7 @@ module Atom (Atom : Set)
     -- infix  9  `_
     
     data TermInContext : Context → Set where
-        `_ : {Γ : Context} → (x : Atom) → {(x ∈d Γ) ≡ true} → TermInContext Γ
+        `_ : {Γ : Context} → (x : Atom) → {q : (x ∈d Γ) ≡ true} → TermInContext Γ
         _·_ : {Γ : Context} → TermInContext Γ → TermInContext Γ → TermInContext Γ
         ƛ_⇒_ : {Γ : Context} → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (TermInContext (Γ ∷ x d p)) → TermInContext Γ
     
@@ -309,6 +324,12 @@ module Atom (Atom : Set)
             supp = toList
         })
 
+    NomAtom : NomSet
+    NomAtom = (
+        record {
+            USet = Atom;
+            supp = (λ x → singleton x)
+        })
 
     record Par : Set where
         constructor _,,_
@@ -487,6 +508,14 @@ module Atom (Atom : Set)
     data _#_/g_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
         konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b /g c)
     
+    aksiom1 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/g_ {A = a} {B = b} {C = prod c d} x y (z , w))
+    aksiom1 = {!   !}
+
+    aksiom2 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/g_ {A = a} {B = c} {C = d} x z w)
+    aksiom2 = {!   !}
+
+    aksiom3 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : (_#_/g_ {A = a} {B = b} {C = prod c d} x y (z , w))) → (s2 : (_#_/g_ {A = a} {B = c} {C = d} x z w)) → (_#_/g_ {A = a} {B = prod b c} {C = d} x (y , z) w)
+    aksiom3 = {!   !}
 
     -- posebna oznaka, če sta oba izraza nad istim kontekstom Γ, glede na katerega gledamo relacijo
     _⊢_#_ : (Γ : Context) → TermInContext Γ → TermInContext Γ → Set
@@ -494,6 +523,39 @@ module Atom (Atom : Set)
 
     separiranostSimetrična2 : (Γ : Context) → (M : TermInContext Γ) → (N : TermInContext Γ) → (p : Γ ⊢ M # N) → (Γ ⊢ N # M)
     separiranostSimetrična2 Γ M N = {!   !}
+    
+    vrne1 : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (_#_/g_ {A = NomAtom} {B = NomTermInContext Γ} {C = NomContext} z M []d)
+    vrne1 = {!   !}
 
+    vrne2 : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (_#_/g_ {A = NomAtom} {B = NomContext} {C = NomContext} z Γ []d)
+    vrne2 = {!   !}
+
+    vrne : (Γ : NomSet.USet NomContext) → (z : Atom) → (M : NomSet.USet (NomTermInContext Γ)) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → ((z ∈d Γ) ≡ false)
+    vrne = {!   !}
+
+
+    ∈d-weaken : {Γ : Context} {x z : Atom} → {a : x ∈d Γ ≡ true} → (p : z ∈d Γ ≡ false) → x ∈d (Γ ∷ z d p) ≡ true
+    ∈d-weaken {gama} {x} {z} {a} p = ∨-true3 a
+
+
+    weaken : {Γ : Context} (z : Atom) {p : z ∈d Γ ≡ false} → (M : TermInContext Γ) → (vsebovanostVPreseku (z ∷ []) (supp_ M) [] ≡ true) → TermInContext (Γ ∷ z d p)
+    weaken {Γ} z {p} (`_ {Γ = Γ} x {q = q}) _ = `_ {Γ = Γ ∷ z d p} x {q = ∈d-weaken {Γ = Γ} {x = x} {z = z} {a = q} p}
+    -- weaken z {p} (M · N) _ = weaken z {p} M · weaken z {p} N
+    weaken z {p} (M · N) _ = {!   !}
+    weaken z {p} (ƛ x ⇒ M) _ = {!   !}
+
+    lema : {Γ : NomSet.USet NomContext} → (M : NomSet.USet (NomTermInContext Γ)) → (z : Atom) → (separiranost : _#_/g_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → (NomSet.USet (NomTermInContext (Γ ∷ z d (vrne Γ z M separiranost))))
+    lema = {!   !}
+    {-
+    lemma M z s with M
+    ... | ` x = 
+    ... | M₁ · M₂ = ...
+    ... | ƛ x ⇒ M₁ = ...
+    -}
+    
     substitucija : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → (TermInContext Γ)
     substitucija {Γ} N x {p} M {s} = {!   !}
+
+    -- namesto splošnega M imamo le lambda abstrakcijo
+    substitucijaNovo : {Γ : NomSet.USet NomContext} → (N : NomSet.USet (NomTermInContext Γ)) → (x : Atom) → {p : (x ∈d Γ) ≡ false} → (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → {s : _#_/g_ {A = NomTermInContext Γ} {B = NomTermInContext Γ} {C = NomContext} (ƛ x ⇒ M) N Γ} → (TermInContext Γ)
+    substitucijaNovo {Γ} N x {p} M {s} = {!   !} 
