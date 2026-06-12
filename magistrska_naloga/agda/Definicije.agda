@@ -174,6 +174,7 @@ kontrapozitiv4 {false} f pb rewrite f refl = sym pb
 
 module Atom (Atom : Set)
     (_≟_ : (x y : Atom) → Dec (x ≡ y))
+    -- (fresh : (xs : DistinctList Atom) → Σ Atom (λ (a : Atom) → a ∈d xs ≡ false))
     where
 
     Dec→Bool : {P : Set} → Dec P → Bool
@@ -329,17 +330,17 @@ module Atom (Atom : Set)
     
     Nosilec = List Atom
 
-    supp_ : {Γ : Context} → TermInContext Γ → Nosilec
-    supp_ {Γ} (` x) = toList Γ
-    supp_ {Γ} (M · N) = _++_ (supp M) (supp N)
-    supp_ {Γ} (ƛ x ⇒ M) = supp M
+    supp : {Γ : Context} → TermInContext Γ → Nosilec
+    supp {Γ} (` x) = toList Γ
+    supp {Γ} (M · N) = _++_ (supp M) (supp N)
+    supp {Γ} (ƛ x ⇒ M) = supp M
 
 
     NomTermInContext : (Γ : Context) → NomSet
     NomTermInContext Γ = (
         record {
             USet = TermInContext Γ;
-            supp = supp_ {Γ}
+            supp = supp {Γ}
         })
     
 
@@ -413,9 +414,118 @@ module Atom (Atom : Set)
         zamenjajDokazY = {!   !}
     
     
+    proj1 : {A B C D E F : Set} → A × B × C × D × E × F → A
+    proj1 x = proj₁ x
+    
+    proj2 : {A B C D E F : Set} → A × B × C × D × E × F → B
+    proj2 x = proj₁ (proj₂ x)
+    
+    proj3 : {A B C D E F : Set} → A × B × C × D × E × F → C
+    proj3 x = proj₁ (proj₂ (proj₂ x))
+    
+    proj4 : {A B C D E F : Set} → A × B × C × D × E × F → D
+    proj4 x = proj₁ (proj₂ (proj₂ (proj₂ x)))
+
+    proj5 : {A B C D E F : Set} → A × B × C × D × E × F → E
+    proj5 x = proj₁ (proj₂ (proj₂ (proj₂ (proj₂ x))))
+
+    proj6 : {A B C D E F : Set} → A × B × C × D × E × F → F
+    proj6 x = proj₂ (proj₂ (proj₂ (proj₂ (proj₂ x))))
+    
+    
+    switchContextInductive : (Γ : Context) → (x y : Atom) → Σ Context (λ (Γ' : Context) →
+        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × 
+        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ' ≡ true → z ∈d Γ ≡ true) × 
+        (x ∈d Γ ≡ true → y ∈d Γ' ≡ true) × 
+        (y ∈d Γ' ≡ true → x ∈d Γ ≡ true) × 
+        (x ∈d Γ' ≡ true → y ∈d Γ ≡ true) × 
+        (y ∈d Γ ≡ true → x ∈d Γ' ≡ true))
+    switchContextInductive []d x y = ([]d , (λ z p q r → r) , (λ z p q r → r) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)))
+    
+    switchContextInductive (ws ∷ w d pw) x y = (ws' ∷ w' d pw' , f1 , f2 , f3 , f4 , f5 , f6)
+        where
+            inductive1 = switchContextInductive ws x y
+
+            ws' : Context
+            ws' = proj₁ inductive1
+            
+            z : Atom
+            z = {!   !}
+
+            w' : Atom
+            w' with _==_ z x
+            ... | true = y
+            ... | false with _==_ z y
+            ...   | true = x
+            ...   | false = z
+
+            pw' : w' ∈d ws' ≡ false
+            pw' = {!   !}
+
+            Γ' = ws' ∷ w' d pw'
+            
+            -- if z == x then y, if z == y then x, else z
+
+            f' = proj₂ inductive1
+
+            f1' : (z == x ≡ false → z == y ≡ false → z ∈d ws ≡ true → z ∈d ws' ≡ true)
+            f1' = ? --proj1 f'
+            
+            f2' = proj2 f'
+            f3' = proj3 f'
+            f4' = proj4 f'
+            f5' = proj5 f'
+            f6' = proj6 f'
+
+            help : {z w w' : Atom} → (z == w ≡ true) → (w == w' ≡ true)
+            help = ?
+
+            sh : (eq : z == w ≡ false) → (pws : z ∈d (ws ∷ w d pw) ≡ true) → z ∈d ws ≡ true
+            sh eq pws = (∨-falseˡ' eq pws)
+
+            f1 : z == x ≡ false → z == y ≡ false → (z ∈d (ws ∷ w d pw) ≡ true) → z ∈d (ws' ∷ w' d pw') ≡ true
+            f1 px py pws with z == w in eq
+            ... | true = ∨-trueˡ' (==-trans eq (help eq))
+            ... | false = ∨-trueʳ2 (f1' px py pws)
+
+            -- z == w -> w = w', so z == w'
+            -- z in ws -> z in ws', by f1'
+
+
+            f2 : (z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d (ws' ∷ w' d pw') ≡ true → z ∈d (ws ∷ w d pw) ≡ true
+            f2 = {!   !}
+
+
+            f3 : x ∈d (ws ∷ w d pw) ≡ true → y ∈d (ws' ∷ w' d pw') ≡ true
+            f3 = {!   !}
+            -- x == w -> w = w', so x == w'
+            -- x in ws -> y in ws', by f3'
+
+            f4 : y ∈d (ws' ∷ w' d pw') ≡ true → x ∈d (ws ∷ w d pw) ≡ true
+            f4 = {!   !}
+
+            f5 : x ∈d (ws' ∷ w' d pw') ≡ true → y ∈d (ws ∷ w d pw) ≡ true
+            f5 = {!   !}
+
+            f6 : y ∈d (ws ∷ w d pw) ≡ true → x ∈d Γ' ≡ true
+            f6 = {!   !}            
+
+
+{-
+    switchContext : (Γ : Context) → (x y : Atom) → (x ∈d Γ ≡ true) → (y ∈d Γ ≡ true) → Σ Context (λ (Γ' : Context) →
+        (z : Atom) -> (z ∈d Γ ≡ true) -> (z ∈d Γ' ≡ true) x
+        (z : Atom) -> (z ∈d Γ' ≡ true) -> (z ∈d Γ ≡ true)
+-}
+{-
+
+    switchTerm : {Γ : Context} -> (x y : Atom) -> (M : TermInContext Γ) -> 
+-}
+
+
+            
+
     {-
-    switchContext : (Γ : Context) → (x y : Atom) → Context
-    switchContext []d x y = []d
+    switchContext []d x y = ?
     switchContext (l ∷ c d p) x y with (_==_ x c) in eqX
     ... | true with (_==_ y c) in eqY
     ...     | true = l ∷ c d p
@@ -424,6 +534,11 @@ module Atom (Atom : Set)
     ...     | true = l ∷ x
     ...     | false = l ∷ c d p
     -}
+
+    -- Σ
+    -- (fresh : (xs : DistinctList Atom) → Σ Atom (λ (a : Atom) → a ∈d xs ≡ false))
+    
+
     
     {-
     switch : (Γ : Context) → (M : TermInContext Γ) → (x y : Atom) → TermInContext (switchContext x y Γ)
@@ -485,6 +600,11 @@ module Atom (Atom : Set)
     ... | true = refl
     ... | false = ∈-++-left {x} {ys} {zs} h
 
+    ∈-++-left-kontra : {x : Atom} {ys zs : List Atom} → 
+        (x ∈ (ys ++ zs) ≡ false) → 
+        (x ∈ ys ≡ false)
+    ∈-++-left-kontra {x} {ys} {zs} = kontrapozitiv2 (∈-++-left {x} {ys} {zs})
+
     ∈-++-right : {x : Atom} {ys zs : List Atom} → 
         (x ∈ zs ≡ true) → 
         (x ∈ (ys ++ zs) ≡ true)
@@ -492,6 +612,11 @@ module Atom (Atom : Set)
     ∈-++-right {x} {y ∷ ys} {zs} h with _==_ x y
     ... | true = refl
     ... | false = ∈-++-right {x} {ys} {zs} h
+
+    ∈-++-right-kontra : {x : Atom} {ys zs : List Atom} → 
+        (x ∈ (ys ++ zs) ≡ false) → 
+        (x ∈ zs ≡ false)
+    ∈-++-right-kontra {x} {ys} {zs} = kontrapozitiv2 (∈-++-right {x} {ys} {zs})
 
     head : {x : Atom} {ys zs : List Atom} → 
         ((x ∈ (ys ++ zs)) ⇒ false) ≡ true → 
@@ -531,17 +656,17 @@ module Atom (Atom : Set)
     
 
     {-
-        supp_ : {Γ : Context} → TermInContext Γ → Nosilec
-        supp_ {Γ} (` x) = toList Γ
-        supp_ {Γ} (M · N) = _++_ (supp M) (supp N)
-        supp_ {Γ} (ƛ x ⇒ M) = supp M
+        supp : {Γ : Context} → TermInContext Γ → Nosilec
+        supp {Γ} (` x) = toList Γ
+        supp {Γ} (M · N) = _++_ (supp M) (supp N)
+        supp {Γ} (ƛ x ⇒ M) = supp M
     -}
     
     lema-1 : (Γ : DistinctList) → (z : Atom) →
         (z ∈d Γ ≡ true) → 
         (z ∈ toList Γ ≡ true)
     lema-1 []d z p = ⊥-elim2 (absurdizem p)
-    lema-1 (l ∷ x d q) z p with z == x in eq
+    lema-1 (l ∷ x d q) z p with z == x
     ... | true = refl
     ... | false =
         let
@@ -550,6 +675,7 @@ module Atom (Atom : Set)
         in
         lema-1 l z h'
 
+    --lema 0.5
     ∈d-weaken : {Γ : Context} {x z : Atom} → 
         (q : x ∈d Γ ≡ true) → 
         (p : z ∈d Γ ≡ false) → 
@@ -567,38 +693,79 @@ module Atom (Atom : Set)
 
     lema0 : {Γ : Context} (x : Atom) (M : TermInContext Γ) →
         (x ∈d Γ ≡ true) →
-        (x ∈ (supp_ M) ≡ true)
+        (x ∈ (supp M) ≡ true)
     lema0 {Γ} x (`_ {Γ = Γ} z {q = q}) p = lema-1 Γ x p
     lema0 {Γ} x (_·_ {Γ = Γ} N1 N2) p = ∈-++-left {x} {supp N1} {supp N2} (lema0 {Γ} x N1 p)
     lema0 {Γ} x (ƛ_⇒_ {Γ = Γ} z {q} M') p = lema0 {Γ ∷ z d q} x M' (∈d-weaken {Γ} {x} {z} p q)
 
     lema1 : {Γ : Context} (x : Atom) (M : TermInContext Γ) →
-        (x ∈ (supp_ M) ≡ false) →
+        (x ∈ (supp M) ≡ false) →
         (x ∈d Γ ≡ false)
     lema1 {Γ} x M p = kontrapozitiv2 (lema0 {Γ} x M) p
 
 
-    helpp : {Γ : Context} {x : Atom} {N1 N2 : TermInContext Γ} (p : x ∈ (supp_ (_·_ {Γ = Γ} N1 N2)) ≡ false) -> (x ∈ ((supp N1) ++ (supp N2)) ≡ false)
+    helpp : {Γ : Context} {x : Atom} {N1 N2 : TermInContext Γ} (p : x ∈ (supp (_·_ {Γ = Γ} N1 N2)) ≡ false) -> (x ∈ ((supp N1) ++ (supp N2)) ≡ false)
     helpp p = {!   !}
     
     simpleWeaken : {Γ : Context} (z : Atom) → 
         (M : TermInContext Γ) → 
-        (p : z ∈ (supp_ M) ≡ false) →
+        (p : z ∈ (supp M) ≡ false) →
         TermInContext (Γ ∷ z d (lema1 {Γ} z M p))
-    simpleWeaken {Γ} z M p = 
+    simpleWeaken {Γ} z (`_ {Γ = Γ} x {q = q}) p = `_ {Γ = Γ ∷ z d r} x {q = ∈d-weaken {Γ} {x} {z} q r}
+        where
+            r : z ∈d Γ ≡ false
+            r = lema1 {Γ} z (`_ {Γ = Γ} x {q = q}) p
+    simpleWeaken {Γ} z (_·_ {Γ = Γ} N1 N2) p = _·_ {Γ = Γ ∷ z d r} N1' N2'
+        where
+            r : z ∈d Γ ≡ false
+            r = lema1 {Γ} z (_·_ {Γ = Γ} N1 N2) p
+
+            p1 : z ∈ (supp N1) ≡ false       
+            p1 = ∈-++-left-kontra {z} {supp N1} {supp N2} p
+
+            N1' : TermInContext (Γ ∷ z d r)
+            -- N1' = simpleWeaken {Γ} z N1 p1
+            N1' = {!   !}
+            
+            p2 : z ∈ (supp N2) ≡ false
+            p2 = ∈-++-right-kontra {z} {supp N1} {supp N2} p
+
+            N2' : TermInContext (Γ ∷ z d r)
+            -- N2' = simpleWeaken {Γ} z N2 p2
+            N2' = {!   !}
+        -- _·_ (simpleWeaken {Γ} z N1 (kontrapozitiv2 (∈-++-left {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?))) (simpleWeaken {Γ} z N2 (kontrapozitiv2 (∈-++-right {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?)))
+    {-simpleWeaken {Γ} z (ƛ_⇒_ {Γ = Γ} x {p = p} M') q = ƛ_⇒_ {Γ = Γ ∷ z d r} x {lema-0-7 Γ x z p {r} g} ( (simpleWeaken {Γ ∷ x d p} z M' p'))
+        where
+            r : z ∈d Γ ≡ false
+            r = lema1 {Γ} z (ƛ_⇒_ {Γ = Γ} x {p = p} M') q
+
+            g : x == z ≡ false
+            g = {!   !}
+
+            p' : z ∈ (supp M') ≡ false
+            p' = {!   !}
+-}
+        {-
         let
             r : z ∈d Γ ≡ false
             r = lema1 {Γ} z M p
         in
-            f′ Γ z p r M
+            `_ {Γ = Γ ∷ z d r} x {q = ∈d-weaken {Γ} {x} {z} q r}
+            {-
             where
                 f′ : (Γ : Context) → (z : Atom) → 
-                        (p : z ∈ (supp_ M) ≡ false) →
+                        (p : z ∈ (supp M) ≡ false) →
                         (r : z ∈d Γ ≡ false) →
                         (M : TermInContext Γ) →
                         TermInContext (Γ ∷ z d r)
                 f′ Γ z p r (`_ {Γ = Γ} x {q = q}) = `_ {Γ = Γ ∷ z d r} x {q = ∈d-weaken {Γ} {x} {z} q r}
-                --f′ Γ z p r (_·_ {Γ = Γ} N1 N2) = _·_ (simpleWeaken {Γ} z N1 (kontrapozitiv2 (∈-++-left {z} {supp_ N1} {supp_ N2}) (helpp {Γ} {z} {N1} {N2} ?))) (simpleWeaken {Γ} z N2 (kontrapozitiv2 (∈-++-right {z} {supp_ N1} {supp_ N2}) (helpp {Γ} {z} {N1} {N2} ?)))
+                --f′ Γ z p r (_·_ {Γ = Γ} N1 N2) = _·_ (simpleWeaken {Γ} z N1 (kontrapozitiv2 (∈-++-left {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?))) (simpleWeaken {Γ} z N2 (kontrapozitiv2 (∈-++-right {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?)))
+              -}  
+                
+                -}
+                
+                
+                
                 {-
                 f′ Γ z p r (ƛ_⇒_ {Γ = Γ} x {p = q} M') = 
                     let
@@ -610,12 +777,12 @@ module Atom (Atom : Set)
                     in
                         ƛ_⇒_ {Γ = Γ ∷ z d r} x {lema-0-7 Γ x z q {r} g} (switch2 {Γ} {x} {z} q r g (simpleWeaken {Γ ∷ x d q} z M' p'))
                 -}
-                f′ Γ z p r (_·_ {Γ = Γ} N1 N2) = {!   !}
-                f′ Γ z p r (ƛ_⇒_ {Γ = Γ} x {p = q} M') = {!   !}
+                -- f′ Γ z p r (_·_ {Γ = Γ} N1 N2) = {!   !}
+                -- f′ Γ z p r (ƛ_⇒_ {Γ = Γ} x {p = q} M') = {!   !}
     
     weaken : {Γ : Context} (z : Atom) {p : z ∈d Γ ≡ false} → 
         (M : TermInContext Γ) → 
-        (vsebovanostVPreseku (z ∷ []) (supp_ M) [] ≡ true) → 
+        (vsebovanostVPreseku (z ∷ []) (supp M) [] ≡ true) → 
         TermInContext (Γ ∷ z d p)
     weaken {Γ} z {p} (`_ {Γ = Γ} x {q = q}) _ = 
         `_ {Γ = Γ ∷ z d p} x {q = ∈d-weaken {Γ = Γ} {x = x} {z = z} q p}
