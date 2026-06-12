@@ -433,24 +433,22 @@ module Atom (Atom : Set)
     proj6 x = proj₂ (proj₂ (proj₂ (proj₂ (proj₂ x))))
     
     
-    switchContextInductive : (Γ : Context) → (x y : Atom) → Σ Context (λ (Γ' : Context) →
-        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × 
-        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ' ≡ true → z ∈d Γ ≡ true) × 
+    switchContextInductive : (Γ : Context) → (x y z : Atom) → Σ Context (λ (Γ' : Context) →
+        (z == x ≡ false → z == y ≡ false → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × 
+        (z == x ≡ false → z == y ≡ false → z ∈d Γ' ≡ true → z ∈d Γ ≡ true) × 
         (x ∈d Γ ≡ true → y ∈d Γ' ≡ true) × 
         (y ∈d Γ' ≡ true → x ∈d Γ ≡ true) × 
         (x ∈d Γ' ≡ true → y ∈d Γ ≡ true) × 
         (y ∈d Γ ≡ true → x ∈d Γ' ≡ true))
-    switchContextInductive []d x y = ([]d , (λ z p q r → r) , (λ z p q r → r) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)))
+    switchContextInductive []d x y z = ([]d , (λ p q r → r) , (λ p q r → r) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)))
     
-    switchContextInductive (ws ∷ w d pw) x y = (ws' ∷ w' d pw' , f1 , f2 , f3 , f4 , f5 , f6)
+    switchContextInductive (ws ∷ w d pw) x y z = (ws' ∷ w' d pw' , f1 , f2 , f3 , f4 , f5 , f6)
         where
-            inductive1 = switchContextInductive ws x y
+            inductive1 = switchContextInductive ws x y z
 
             ws' : Context
             ws' = proj₁ inductive1
             
-            z : Atom
-            z = {!   !}
 
             w' : Atom
             w' with _==_ z x
@@ -468,8 +466,8 @@ module Atom (Atom : Set)
 
             f' = proj₂ inductive1
 
-            f1' : (z == x ≡ false → z == y ≡ false → z ∈d ws ≡ true → z ∈d ws' ≡ true)
-            f1' = ? --proj1 f'
+            f1' : z == x ≡ false → z == y ≡ false → z ∈d ws ≡ true → z ∈d ws' ≡ true
+            f1' = proj1 f'
             
             f2' = proj2 f'
             f3' = proj3 f'
@@ -478,7 +476,7 @@ module Atom (Atom : Set)
             f6' = proj6 f'
 
             help : {z w w' : Atom} → (z == w ≡ true) → (w == w' ≡ true)
-            help = ?
+            help = {!   !}
 
             sh : (eq : z == w ≡ false) → (pws : z ∈d (ws ∷ w d pw) ≡ true) → z ∈d ws ≡ true
             sh eq pws = (∨-falseˡ' eq pws)
@@ -491,31 +489,47 @@ module Atom (Atom : Set)
             -- z == w -> w = w', so z == w'
             -- z in ws -> z in ws', by f1'
 
+            help2 : {z w w' : Atom} → (z == w' ≡ true) → (w' == w ≡ true)
+            help2 = {!   !}
 
-            f2 : (z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d (ws' ∷ w' d pw') ≡ true → z ∈d (ws ∷ w d pw) ≡ true
-            f2 = {!   !}
+            f2 : z == x ≡ false → z == y ≡ false → z ∈d (ws' ∷ w' d pw') ≡ true → z ∈d (ws ∷ w d pw) ≡ true
+            f2 px py pws with z == w' in eq
+            ... | true = ∨-trueˡ' (==-trans eq (help2 eq))
+            ... | false = ∨-trueʳ2 (f2' px py pws)
 
 
             f3 : x ∈d (ws ∷ w d pw) ≡ true → y ∈d (ws' ∷ w' d pw') ≡ true
-            f3 = {!   !}
+            f3 p with x == w in eq
+            ... | true = {!   !}
+            ... | false = ∨-trueʳ2 (f3' p)
             -- x == w -> w = w', so x == w'
             -- x in ws -> y in ws', by f3'
 
             f4 : y ∈d (ws' ∷ w' d pw') ≡ true → x ∈d (ws ∷ w d pw) ≡ true
-            f4 = {!   !}
+            f4 p with y == w' in eq
+            ... | true = {!   !}
+            ... | false = ∨-trueʳ2 (f4' p)
 
             f5 : x ∈d (ws' ∷ w' d pw') ≡ true → y ∈d (ws ∷ w d pw) ≡ true
-            f5 = {!   !}
+            f5 p with x == w' in eq
+            ... | true = {!   !}
+            ... | false = ∨-trueʳ2 (f5' p)
 
-            f6 : y ∈d (ws ∷ w d pw) ≡ true → x ∈d Γ' ≡ true
-            f6 = {!   !}            
+            f6 : y ∈d (ws ∷ w d pw) ≡ true → x ∈d (ws' ∷ w' d pw') ≡ true
+            f6 p with y == w in eq
+            ... | true = {!   !}
+            ... | false = ∨-trueʳ2 (f6' p)           
 
 
-{-
+
     switchContext : (Γ : Context) → (x y : Atom) → (x ∈d Γ ≡ true) → (y ∈d Γ ≡ true) → Σ Context (λ (Γ' : Context) →
-        (z : Atom) -> (z ∈d Γ ≡ true) -> (z ∈d Γ' ≡ true) x
-        (z : Atom) -> (z ∈d Γ' ≡ true) -> (z ∈d Γ ≡ true)
--}
+        ((z : Atom) → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) ×
+        ((z : Atom) → z ∈d Γ' ≡ true → z ∈d Γ ≡ true))
+    switchContext []d x y px py = ([]d , (λ z r → r) , (λ z r → r))
+    switchContext (ws ∷ w d pw) x y px py = {!   !}
+
+
+
 {-
 
     switchTerm : {Γ : Context} -> (x y : Atom) -> (M : TermInContext Γ) -> 
