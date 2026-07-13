@@ -74,6 +74,10 @@ c = ?
 ∨-trueʳ2 {false} refl = refl
 ∨-trueʳ2 {true}  refl = refl
 
+∨-trueʳ222 : {b c : Bool} → c ≡ true → (c ∨ b) ≡ true
+∨-trueʳ222 {false} refl = refl
+∨-trueʳ222 {true}  refl = refl
+
 data ⊥ : Set where
 
 ⊥-elim2 : {A : Set} → ⊥ → A
@@ -210,9 +214,17 @@ module Atom (Atom : Set)
     ==-false-sym : {a b : Atom} → (_==_ a b ≡ false) → (_==_ b a ≡ false)
     ==-false-sym {a} {b} p rewrite sym (==-sym {a} {b}) = p
 
+    ==-true-sym : {a b : Atom} → (_==_ a b ≡ true) → (_==_ b a ≡ true)
+    ==-true-sym {a} {b} p rewrite sym (==-sym {a} {b}) = p
+
     ==-trans : {a b c : Atom} → (pab : _==_ a b ≡ true) → (pbc : _==_ b c ≡ true) → (_==_ a c ≡ true)
     ==-trans pab pbc = ≡-to-== (trans (==-to-≡ pab) (==-to-≡ pbc))
 
+    {-
+    ==-trans-false : {a b c : Atom} → (pab : _==_ a b ≡ true) → (pbc : _==_ b c ≡ false) → (_==_ a c ≡ false)
+    ==-trans-false = {!   !}
+    -}
+    
     ∧-false-from-left2 : {a b x y : Atom} → (_==_ b y ≡ false) → (_==_ b y ∧ _==_ a x) ≡ false
     ∧-false-from-left2 p = ∧-false-from-left p
 
@@ -378,6 +390,7 @@ module Atom (Atom : Set)
     ...     | true = x
     ...     | false = xs preslika a
 
+    {-
     lemica : (l : DistinctList) → (y c : Atom) {p : c ∈d l ≡ false} → (y ∈d (l ∷ c d p) ≡ false) → (y ∈d l ≡ false)
     lemica = {!   !}
 
@@ -412,7 +425,7 @@ module Atom (Atom : Set)
         
         zamenjajDokazY : (Γ : Context) → (x y : Atom) → (px : x ∈d Γ ≡ true) → (py : y ∈d Γ ≡ false) → (y ∈d (zamenjaj Γ x y px py) ≡ true)
         zamenjajDokazY = {!   !}
-    
+    -}
     
     proj1 : {A B C D E F : Set} → A × B × C × D × E × F → A
     proj1 x = proj₁ x
@@ -432,41 +445,122 @@ module Atom (Atom : Set)
     proj6 : {A B C D E F : Set} → A × B × C × D × E × F → F
     proj6 x = proj₂ (proj₂ (proj₂ (proj₂ (proj₂ x))))
     
+
+    ∈d-respects-≡ : {Γ : DistinctList} {x z : Atom} → x ≡ z → x ∈d Γ ≡ true → z ∈d Γ ≡ true
+    ∈d-respects-≡ refl p = p
+
+    x∈⇒z∈ : {Γ : DistinctList} {x z : Atom} → x == z ≡ true → x ∈d Γ ≡ true → z ∈d Γ ≡ true
+    x∈⇒z∈ {Γ} {x} {z} q xin = ∈d-respects-≡ {Γ} {x} {z} (==-to-≡ q) xin
+
+    pomagac : {x z : Atom} {ws : DistinctList} → (z == x ≡ true) → (z ∈d ws ≡ false) → (x ∈d ws ≡ false)
+    pomagac {x} {z} {Γ} eq p = kontrapozitiv2 (x∈⇒z∈ {Γ} {x} {z} (==-true-sym eq)) p
     
-    switchContextInductive : (Γ : Context) → (x y z : Atom) → Σ Context (λ (Γ' : Context) →
-        (z == x ≡ false → z == y ≡ false → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × 
-        (z == x ≡ false → z == y ≡ false → z ∈d Γ' ≡ true → z ∈d Γ ≡ true) × 
+    {-
+    pomagac : {x w : Atom} {ws : DistinctList} → (w == x ≡ true) → (w ∈d ws ≡ false) → (x ∈d ws ≡ false)
+    pomagac {x} {w} {[]d} e p = refl
+    pomagac {x} {w} {ws' ∷ w' d pw} e p with w' == w in blrg
+    ... | true = 
+        let
+            ws = ws' ∷ w' d pw
+            
+            a : w' ∈d ws ≡ true
+            a = {!   !}
+
+            b : w ∈d ws ≡ true
+            b = {!   !}
+
+            h : true ≡ false
+            h = trans (sym b) p
+        in
+            ⊥-elim2 (absurdizem2 h)
+    ... | false = 
+        let
+            a : w ∈d ws' ≡ false
+            a = ∨-false-right p
+
+            b : x ∈d ws' ≡ false
+            b = pomagac {x} {w} {ws'} e a
+
+            c : x == w' ≡ false
+            c = {!   !} -- blrg
+        in
+            ∨-intro-false c b
+    -}
+
+    switchContextInductive : (Γ : Context) → (x y : Atom) → Σ Context (λ (Γ' : Context) →
+        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × 
+        ((z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d Γ' ≡ true → z ∈d Γ ≡ true) × 
         (x ∈d Γ ≡ true → y ∈d Γ' ≡ true) × 
         (y ∈d Γ' ≡ true → x ∈d Γ ≡ true) × 
         (x ∈d Γ' ≡ true → y ∈d Γ ≡ true) × 
         (y ∈d Γ ≡ true → x ∈d Γ' ≡ true))
-    switchContextInductive []d x y z = ([]d , (λ p q r → r) , (λ p q r → r) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)))
+    switchContextInductive []d x y = 
+        ([]d , (λ z p q r → r) , (λ z p q r → r) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)) , (λ p → ⊥-elim2 (absurdizem p)))
     
-    switchContextInductive (ws ∷ w d pw) x y z = (ws' ∷ w' d pw' , f1 , f2 , f3 , f4 , f5 , f6)
+    switchContextInductive (ws ∷ w d pw) x y = (ws' ∷ w' d pw' , f1 , f2 , f3 , f4 , f5 , f6)
         where
-            inductive1 = switchContextInductive ws x y z
+            inductive1 = switchContextInductive ws x y
 
             ws' : Context
             ws' = proj₁ inductive1
             
 
             w' : Atom
-            w' with _==_ z x
+            w' with _==_ w x
             ... | true = y
-            ... | false with _==_ z y
+            ... | false with _==_ w y
             ...   | true = x
-            ...   | false = z
+            ...   | false = w
 
-            pw' : w' ∈d ws' ≡ false
-            pw' = {!   !}
+            l1 : (w == x ≡ true) → (w' == y ≡ true)
+            l1 h with _==_ w x
+            ... | true  = ==-refl {y}
+            ... | false = ⊥-elim2 (absurdizem h)
 
-            Γ' = ws' ∷ w' d pw'
+            
+            l2 : (w == y ≡ true) → (w' == x ≡ true)
+            l2 h with _==_ w x in eq
+            ... | true = ==-trans (==-refl {y}) (==-trans (==-true-sym h) eq)
+            ... | false with (w == y)
+            ...     | true = ==-refl {x}
+            ...     | false = ⊥-elim2 (absurdizem h)
+            
+            -- (w == x ≡ false) → (w' == x ≡ false)
+            -- helpino1 : (w == y ≡ false) → (x != y)-> (w' == x ≡ false)
+
+            l1' : (w' == x ≡ true) → (w == y ≡ true)
+            l1' h with _==_ w x in eqX
+            ... | true = ==-trans eqX (==-true-sym h)
+            ... | false with (_==_ w y)
+            ...     | true = refl
+            ...     | false = ⊥-elim2 (absurdizem (trans (sym eqX) h))
+
+            l2' : (w' == y ≡ true) → (w == x ≡ true)
+            l2' h with _==_ w x in eqX
+            ... | true = refl
+            ... | false with (_==_ w y) in eqY
+            ...     | true = ⊥-elim2 (absurdizem (trans (sym eqX) (==-trans eqY (==-true-sym h))))
+            ...     | false = ⊥-elim2 (absurdizem (trans (sym eqY) h))
+
+            l3 : (w == x ≡ false) → (w == y ≡ false) → (w == w' ≡ true)
+            l3 hx hy with _==_ w x
+            ... | true = ⊥-elim2 (absurdizem2 hx)
+            ... | false with w == y
+            ...     | true = ⊥-elim2 (absurdizem2 hy)
+            ...     | false = ==-refl
+
+            l4 : (w' == x ≡ false) → (w' == y ≡ false) → (w' == w ≡ true)
+            l4 hx hy with _==_ w x in eqX
+            ... | true = ⊥-elim2 (absurdizem2 (trans (sym (==-refl {y})) hy))
+            ... | false with (w == y) in eqY
+            ...     | true = ⊥-elim2 (absurdizem2 (trans (sym (==-refl {x})) hx))
+            ...     | false = ==-refl
             
             -- if z == x then y, if z == y then x, else z
 
             f' = proj₂ inductive1
 
-            f1' : z == x ≡ false → z == y ≡ false → z ∈d ws ≡ true → z ∈d ws' ≡ true
+            f1' : (z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d ws ≡ true → z ∈d ws' ≡ true
             f1' = proj1 f'
             
             f2' = proj2 f'
@@ -475,65 +569,150 @@ module Atom (Atom : Set)
             f5' = proj5 f'
             f6' = proj6 f'
 
-            help : {z w w' : Atom} → (z == w ≡ true) → (w == w' ≡ true)
-            help = {!   !}
+            -- sh : (eq : z == w ≡ false) → (pws : z ∈d (ws ∷ w d pw) ≡ true) → z ∈d ws ≡ true
+            -- sh eq pws = (∨-falseˡ' eq pws)
 
-            sh : (eq : z == w ≡ false) → (pws : z ∈d (ws ∷ w d pw) ≡ true) → z ∈d ws ≡ true
-            sh eq pws = (∨-falseˡ' eq pws)
 
-            f1 : z == x ≡ false → z == y ≡ false → (z ∈d (ws ∷ w d pw) ≡ true) → z ∈d (ws' ∷ w' d pw') ≡ true
-            f1 px py pws with z == w in eq
-            ... | true = ∨-trueˡ' (==-trans eq (help eq))
-            ... | false = ∨-trueʳ2 (f1' px py pws)
+            pw' : w' ∈d ws' ≡ false
+            pw' with _==_ w x in eq
+            ... | true =  -- w' == y -> x not in ws (pw, with w == x) --(f4' contra)-> y not in ws'
+                    
+                    let
+                        aa : x ∈d ws ≡ false
+                        aa = pomagac {x} {w} {ws} (eq) pw
 
-            -- z == w -> w = w', so z == w'
-            -- z in ws -> z in ws', by f1'
+                        bb : y ∈d ws' ≡ false
+                        bb = kontrapozitiv2 f4' aa
+                    in
+                        bb
+                    
+            ... | false with _==_ w y in eq2
+            ...   | true =
+                        let
+                            aa : y ∈d ws ≡ false
+                            aa = pomagac {y} {w} {ws} (eq2) pw
 
-            help2 : {z w w' : Atom} → (z == w' ≡ true) → (w' == w ≡ true)
-            help2 = {!   !}
+                            bb : x ∈d ws' ≡ false
+                            bb = kontrapozitiv2 f5' aa
+                        in
+                            bb
+            ...   | false = 
+                kontrapozitiv2 (f2' w eq eq2) pw
 
-            f2 : z == x ≡ false → z == y ≡ false → z ∈d (ws' ∷ w' d pw') ≡ true → z ∈d (ws ∷ w d pw) ≡ true
-            f2 px py pws with z == w' in eq
-            ... | true = ∨-trueˡ' (==-trans eq (help2 eq))
-            ... | false = ∨-trueʳ2 (f2' px py pws)
+            Γ' = ws' ∷ w' d pw'
+
+            f1 : (z : Atom) → z == x ≡ false → z == y ≡ false → (z ∈d (ws ∷ w d pw) ≡ true) → z ∈d (ws' ∷ w' d pw') ≡ true
+            f1 z px py pws with z == w in eq
+            ... | true = ∨-trueˡ' (==-trans eq (l3 px' py'))
+                where
+                    px' : (w == x ≡ false)
+                    px' = kontrapozitiv2 (==-trans eq) px
+
+                    py' : (w == y ≡ false)
+                    py' = kontrapozitiv2 (==-trans eq) py
+
+            ... | false = ∨-trueʳ2 (f1' z px py pws)
+
+
+            
+
+            f2 : (z : Atom) → z == x ≡ false → z == y ≡ false → z ∈d (ws' ∷ w' d pw') ≡ true → z ∈d (ws ∷ w d pw) ≡ true
+            f2 z px py pws with z == w' in eq
+            ... | true = ∨-trueˡ' (==-trans eq (l4 px' py'))
+                where
+                    px' : (w' == x ≡ false)
+                    px' = kontrapozitiv2 (==-trans eq) px
+
+                    py' : (w' == y ≡ false)
+                    py' = kontrapozitiv2 (==-trans eq) py
+
+            ... | false = ∨-trueʳ2 (f2' z px py pws)
 
 
             f3 : x ∈d (ws ∷ w d pw) ≡ true → y ∈d (ws' ∷ w' d pw') ≡ true
             f3 p with x == w in eq
-            ... | true = {!   !}
+            ... | true = ∨-trueˡ' (==-true-sym (l1 (==-true-sym eq)))
             ... | false = ∨-trueʳ2 (f3' p)
             -- x == w -> w = w', so x == w'
             -- x in ws -> y in ws', by f3'
 
             f4 : y ∈d (ws' ∷ w' d pw') ≡ true → x ∈d (ws ∷ w d pw) ≡ true
             f4 p with y == w' in eq
-            ... | true = {!   !}
+            ... | true = ∨-trueˡ' (==-true-sym (l2' (==-true-sym eq)))
             ... | false = ∨-trueʳ2 (f4' p)
 
             f5 : x ∈d (ws' ∷ w' d pw') ≡ true → y ∈d (ws ∷ w d pw) ≡ true
             f5 p with x == w' in eq
-            ... | true = {!   !}
+            ... | true = ∨-trueˡ' (==-true-sym (l1' (==-true-sym eq)))
             ... | false = ∨-trueʳ2 (f5' p)
 
             f6 : y ∈d (ws ∷ w d pw) ≡ true → x ∈d (ws' ∷ w' d pw') ≡ true
             f6 p with y == w in eq
-            ... | true = {!   !}
+            ... | true = ∨-trueˡ' (==-true-sym (l2 (==-true-sym eq)))
             ... | false = ∨-trueʳ2 (f6' p)           
 
 
 
     switchContext : (Γ : Context) → (x y : Atom) → (x ∈d Γ ≡ true) → (y ∈d Γ ≡ true) → Σ Context (λ (Γ' : Context) →
         ((z : Atom) → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) ×
-        ((z : Atom) → z ∈d Γ' ≡ true → z ∈d Γ ≡ true))
-    switchContext []d x y px py = ([]d , (λ z r → r) , (λ z r → r))
-    switchContext (ws ∷ w d pw) x y px py = {!   !}
+        ((z : Atom) → z ∈d Γ' ≡ true → z ∈d Γ ≡ true)) 
+    switchContext Γ x y px py = (Γ' , (g1 , g2))
+        where
+            s = switchContextInductive Γ x y
 
+            Γ' = proj₁ s
+            f = proj₂ s
 
+            f1 = proj1 f
+            f2 = proj2 f
+            f3 = proj3 f
+            f4 = proj4 f
+            f5 = proj5 f
+            f6 = proj6 f
 
-{-
+            g1 : (z : Atom) → z ∈d Γ ≡ true → z ∈d Γ' ≡ true
+            g1 z pz with x == z in eqX
+            ... | true = subst (λ t → t ∈d Γ' ≡ true) (==-to-≡ eqX) (f6 py)
+            ... | false with y == z in eqY
+            ...     | true = subst (λ t → t ∈d Γ' ≡ true) (==-to-≡ eqY) (f3 px)
+            ...     | false = f1 z (==-false-sym eqX) (==-false-sym eqY) pz
+            
 
-    switchTerm : {Γ : Context} -> (x y : Atom) -> (M : TermInContext Γ) -> 
--}
+            g2 : (z : Atom) → z ∈d Γ' ≡ true → z ∈d Γ ≡ true
+            g2 z pz with x == z in eqX
+            ... | true = subst (λ t → t ∈d Γ ≡ true) (==-to-≡ eqX) (px)  -- torej ne rabimo tu f4?
+            ... | false with y == z in eqY
+            ...     | true = subst (λ t → t ∈d Γ ≡ true) (==-to-≡ eqY) (py)  -- torej ne rabimo tu f5?
+            ...     | false = f2 z (==-false-sym eqX) (==-false-sym eqY) pz
+
+    sameElements : (Γ Γ' : Context) → Set
+    sameElements Γ Γ' = ((z : Atom) → z ∈d Γ ≡ true → z ∈d Γ' ≡ true) × ((z : Atom) → z ∈d Γ' ≡ true → z ∈d Γ ≡ true)
+
+    recontext : (Γ Γ' : Context) → (sameElements Γ Γ') → (M : TermInContext Γ) → (TermInContext Γ')
+    recontext Γ Γ' s (`_ {Γ = Γ} x {q = q}) = (`_ {Γ = Γ'} x {q = (proj₁ s) x q})
+    recontext Γ Γ' s (_·_ {Γ = Γ} N1 N2) = (_·_ {Γ = Γ'} (recontext Γ Γ' s N1) (recontext Γ Γ' s N2))
+    recontext Γ Γ' s (ƛ_⇒_ {Γ = Γ} x {p = p} M') = ƛ_⇒_ {Γ = Γ'} x {p = p'} (recontext (Γ ∷ x d p) (Γ' ∷ x d p') s' M')
+        where
+            p' = kontrapozitiv2 ((proj₂ s) x) p
+
+            f1 = proj₁ s
+            f2 = proj₂ s
+
+            f1' : (z : Atom) → z ∈d (Γ ∷ x d p) ≡ true → z ∈d (Γ' ∷ x d p') ≡ true
+            f1' z pz with z == x
+            ... | true = refl
+            ... | false = f1 z pz 
+
+            f2' : (z : Atom) → z ∈d (Γ' ∷ x d p') ≡ true → z ∈d (Γ ∷ x d p) ≡ true
+            f2' z pz with z == x
+            ... | true = refl
+            ... | false = f2 z pz
+
+            s' : sameElements (Γ ∷ x d p) (Γ' ∷ x d p')
+            s' = (f1' , f2')
+
+    -- switchTerm : {Γ : Context} → (x y : Atom) -> (M : TermInContext Γ) -> 
+
 
 
             
@@ -558,6 +737,8 @@ module Atom (Atom : Set)
     switch : (Γ : Context) → (M : TermInContext Γ) → (x y : Atom) → TermInContext (switchContext x y Γ)
     switch 
     -}
+
+    {-
     pomoč1 : {Γ : Context} → {x z : Atom} → (px : x ∈d Γ ≡ false) → (pz : z ∈d Γ ≡ false) → (eq : x == z ≡ false) → (z ∈d (Γ ∷ x d px) ≡ false)
     pomoč1 = {!   !}
 
@@ -566,7 +747,7 @@ module Atom (Atom : Set)
 
     switch2 : {Γ : Context} → {x z : Atom} → (px : x ∈d Γ ≡ false) → (pz : z ∈d Γ ≡ false) → (eq : x == z ≡ false) → (M : TermInContext ((Γ ∷ x d px) ∷ z d (pomoč1 {Γ} {x} {z} px pz eq))) → (TermInContext ((Γ ∷ z d pz) ∷ x d (pomoč2 {Γ} {x} {z} px pz eq)))
     switch2 = {!   !}
-
+    -}
     ------------
 
 
@@ -592,7 +773,7 @@ module Atom (Atom : Set)
     data _#_/_ {A B C : NomSet} : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → Set where  -- set verzija
         konstrukt : (a : NomSet.USet A) → (b : NomSet.USet B) → (c : NomSet.USet C) → (vsebovanostVPreseku (NomSet.supp A a) (NomSet.supp B b) (NomSet.supp C c) ≡ true) → (a # b / c)
     
-
+    {-
     aksiom1 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : _#_/_ {A = a} {B = prod b c} {C = d} x (y , z) w) → (_#_/_ {A = a} {B = b} {C = prod c d} x y (z , w))
     aksiom1 = {!   !}
 
@@ -601,9 +782,18 @@ module Atom (Atom : Set)
 
     aksiom3 : {a b c d : NomSet} → (x : NomSet.USet a) → (y : NomSet.USet b) → (z : NomSet.USet c) → (w : NomSet.USet d) → (separiranost : (_#_/_ {A = a} {B = b} {C = prod c d} x y (z , w))) → (s2 : (_#_/_ {A = a} {B = c} {C = d} x z w)) → (_#_/_ {A = a} {B = prod b c} {C = d} x (y , z) w)
     aksiom3 = {!   !}
-    
+    -}
+      
+
+    eq-bool-proof-irrelevant : {b : Bool} → (p q : b ≡ false) → p ≡ q
+    eq-bool-proof-irrelevant refl refl = refl
+
+    proof-irrelevant-∈d-false : {Γ : DistinctList} {z : Atom} {p q : z ∈d Γ ≡ false} → p ≡ q
+    proof-irrelevant-∈d-false {p = p} {q = q} = eq-bool-proof-irrelevant p q
 
 
+    cast-Term : {Γ : DistinctList} {x : Atom} {p q : x ∈d Γ ≡ false} → TermInContext (Γ ∷ x d p) → TermInContext (Γ ∷ x d q)
+    cast-Term {Γ = Γ} {x = x} {p = p} {q = q} M = subst (λ r -> (TermInContext (Γ ∷ x d r))) (proof-irrelevant-∈d-false {Γ = Γ} {z = x} {p = p} {q = q}) M
 
 
     ∈-++-left : {x : Atom} {ys zs : List Atom} → 
@@ -717,9 +907,23 @@ module Atom (Atom : Set)
         (x ∈d Γ ≡ false)
     lema1 {Γ} x M p = kontrapozitiv2 (lema0 {Γ} x M) p
 
-
+    {-
     helpp : {Γ : Context} {x : Atom} {N1 N2 : TermInContext Γ} (p : x ∈ (supp (_·_ {Γ = Γ} N1 N2)) ≡ false) -> (x ∈ ((supp N1) ++ (supp N2)) ≡ false)
     helpp p = {!   !}
+    -}
+
+    general : (x z : Atom) → (l : List Atom) → (x ∈ l ≡ true) → (z ∈ l ≡ false) → (x == z ≡ false)
+    general x z l px pz with (x == z) in eq'
+    ... | false = refl
+    ... | true =
+        let
+            eq : x ≡ z
+            eq = ==-to-≡ eq'
+
+            zin : z ∈ l ≡ true
+            zin = subst (λ t → t ∈ l ≡ true) eq px
+        in
+        ⊥-elim2 (absurdizem (trans (sym pz) zin))
     
     simpleWeaken : {Γ : Context} (z : Atom) → 
         (M : TermInContext Γ) → 
@@ -738,15 +942,59 @@ module Atom (Atom : Set)
             p1 = ∈-++-left-kontra {z} {supp N1} {supp N2} p
 
             N1' : TermInContext (Γ ∷ z d r)
-            -- N1' = simpleWeaken {Γ} z N1 p1
-            N1' = {!   !}
+            N1' = cast-Term (simpleWeaken {Γ} z N1 p1)
             
             p2 : z ∈ (supp N2) ≡ false
             p2 = ∈-++-right-kontra {z} {supp N1} {supp N2} p
 
             N2' : TermInContext (Γ ∷ z d r)
-            -- N2' = simpleWeaken {Γ} z N2 p2
-            N2' = {!   !}
+            N2' = cast-Term (simpleWeaken {Γ} z N2 p2)
+            
+    simpleWeaken {Γ} z (ƛ_⇒_ {Γ = Γ} x {p = p} M') q = 
+        ƛ_⇒_ {Γ = Γ ∷ z d r} x {lema-0-7 Γ x z p {r} g} (recontext Γxz Γzx s' (cast-Term (simpleWeaken {Γ ∷ x d p} z M' p')))
+            where
+                r : z ∈d Γ ≡ false
+                r = lema1 {Γ} z (ƛ_⇒_ {Γ = Γ} x {p = p} M') q
+
+                lemaža : x ∈d (Γ ∷ x d p) ≡ true
+                lemaža = ∨-true4 (==-refl {x})
+
+                glema : x ∈ (supp M') ≡ true
+                glema = kontrapozitiv1 (lema1 {Γ ∷ x d p} x M') lemaža
+
+                p' : z ∈ (supp M') ≡ false
+                p' = q
+
+                g : x == z ≡ false
+                g = general x z (supp M') glema p'
+
+                pz : (z ∈d (Γ ∷ x d p) ≡ false)
+                pz = ∨-intro-false (==-false-sym g) r
+
+                px : (x ∈d (Γ ∷ z d r) ≡ false)
+                px = ∨-intro-false g p
+
+                Γxz = (Γ ∷ x d p) ∷ z d pz
+                Γzx = (Γ ∷ z d r) ∷ x d px
+                
+                f1' : (y : Atom) → y ∈d Γxz ≡ true → y ∈d Γzx ≡ true
+                f1' y py with y == x
+                ... | true = refl
+                ... | false with y == z
+                ...     | true = refl
+                ...     | false = py
+                
+                f2' : (y : Atom) → y ∈d Γzx ≡ true → y ∈d Γxz ≡ true
+                f2' y py with y == z
+                ... | true = refl
+                ... | false with y == x
+                ...     | true = refl
+                ...     | false = py
+
+                s' : sameElements Γxz Γzx
+                s' = (f1' , f2')
+
+
         -- _·_ (simpleWeaken {Γ} z N1 (kontrapozitiv2 (∈-++-left {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?))) (simpleWeaken {Γ} z N2 (kontrapozitiv2 (∈-++-right {z} {supp N1} {supp N2}) (helpp {Γ} {z} {N1} {N2} ?)))
     {-simpleWeaken {Γ} z (ƛ_⇒_ {Γ = Γ} x {p = p} M') q = ƛ_⇒_ {Γ = Γ ∷ z d r} x {lema-0-7 Γ x z p {r} g} ( (simpleWeaken {Γ ∷ x d p} z M' p'))
         where
@@ -794,6 +1042,7 @@ module Atom (Atom : Set)
                 -- f′ Γ z p r (_·_ {Γ = Γ} N1 N2) = {!   !}
                 -- f′ Γ z p r (ƛ_⇒_ {Γ = Γ} x {p = q} M') = {!   !}
     
+    {-
     weaken : {Γ : Context} (z : Atom) {p : z ∈d Γ ≡ false} → 
         (M : TermInContext Γ) → 
         (vsebovanostVPreseku (z ∷ []) (supp M) [] ≡ true) → 
@@ -803,7 +1052,7 @@ module Atom (Atom : Set)
     -- weaken z {p} (M · N) _ = weaken z {p} M · weaken z {p} N
     weaken z {p} (M · N) _ = {!   !}
     weaken z {p} (ƛ x ⇒ M) _ = {!   !}
-
+    -}
 
 
     -- NomSet stvari
@@ -836,38 +1085,42 @@ module Atom (Atom : Set)
             ⊥-elim2 (absurdizem h₁)
     -}
 
-    vrne : (Γ : NomSet.USet NomContext) → 
-        (z : Atom) → 
-        (M : NomSet.USet (NomTermInContext Γ)) → 
-        (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → 
-        ((z ∈d Γ) ≡ false)
-    -- vrne Γ z M (konstrukt z (M , Γ) []d proof) = singleton-notin (presek-++-right proof)
-    --- uporabi presek-++-right
-    vrne = {!   !}
 
-    lema : {Γ : NomSet.USet NomContext} → 
-        (M : NomSet.USet (NomTermInContext Γ)) → 
-        (z : Atom) → 
-        (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → 
-        (NomSet.USet (NomTermInContext (Γ ∷ z d (vrne Γ z M separiranost))))
-    lema {Γ} M z (konstrukt z (M , Γ) []d proof) = 
-        weaken {Γ} z M (pair-disjoint-left {A = NomAtom} {B = NomTermInContext Γ} {C = NomContext} {a = z} {b = M} {c = Γ} proof)
-    
-    substitucija : {Γ : NomSet.USet NomContext} → 
-        (N : NomSet.USet (NomTermInContext Γ)) → 
-        (x : Atom) → 
-        {p : (x ∈d Γ) ≡ false} → 
-        (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → 
-        {s : _#_/_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → 
-        (TermInContext Γ)
-    substitucija {Γ} N x {p} M {s} = {!   !}
+    {-
+        -- zakomentiramo, ker nismo zapolnili lukenj
+        vrne : (Γ : NomSet.USet NomContext) → 
+            (z : Atom) → 
+            (M : NomSet.USet (NomTermInContext Γ)) → 
+            (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → 
+            ((z ∈d Γ) ≡ false)
+        -- vrne Γ z M (konstrukt z (M , Γ) []d proof) = singleton-notin (presek-++-right proof)
+        --- uporabi presek-++-right
+        vrne = {!   !}
 
-    -- namesto splošnega M imamo le lambda abstrakcijo
-    substitucijaNovo : {Γ : NomSet.USet NomContext} → 
-        (N : NomSet.USet (NomTermInContext Γ)) → 
-        (x : Atom) → 
-        {p : (x ∈d Γ) ≡ false} → 
-        (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → 
-        {s : _#_/_ {A = NomTermInContext Γ} {B = NomTermInContext Γ} {C = NomContext} (ƛ x ⇒ M) N Γ} → 
-        (TermInContext Γ)
-    substitucijaNovo {Γ} N x {p} M {s} = {!   !}   
+        lema : {Γ : NomSet.USet NomContext} → 
+            (M : NomSet.USet (NomTermInContext Γ)) → 
+            (z : Atom) → 
+            (separiranost : _#_/_ {A = NomAtom} {B = prod (NomTermInContext Γ) NomContext} {C = NomContext} z (M , Γ) []d) → 
+            (NomSet.USet (NomTermInContext (Γ ∷ z d (vrne Γ z M separiranost))))
+        lema {Γ} M z (konstrukt z (M , Γ) []d proof) = 
+            weaken {Γ} z M (pair-disjoint-left {A = NomAtom} {B = NomTermInContext Γ} {C = NomContext} {a = z} {b = M} {c = Γ} proof)
+        
+        substitucija : {Γ : NomSet.USet NomContext} → 
+            (N : NomSet.USet (NomTermInContext Γ)) → 
+            (x : Atom) → 
+            {p : (x ∈d Γ) ≡ false} → 
+            (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → 
+            {s : _#_/_ {A = NomTermInContext (Γ ∷ x d p)} {B = NomTermInContext Γ} {C = NomContext} M N Γ} → 
+            (TermInContext Γ)
+        substitucija {Γ} N x {p} M {s} = {!   !}
+
+        -- namesto splošnega M imamo le lambda abstrakcijo
+        substitucijaNovo : {Γ : NomSet.USet NomContext} → 
+            (N : NomSet.USet (NomTermInContext Γ)) → 
+            (x : Atom) → 
+            {p : (x ∈d Γ) ≡ false} → 
+            (M : NomSet.USet (NomTermInContext (Γ ∷ x d p))) → 
+            {s : _#_/_ {A = NomTermInContext Γ} {B = NomTermInContext Γ} {C = NomContext} (ƛ x ⇒ M) N Γ} → 
+            (TermInContext Γ)
+        substitucijaNovo {Γ} N x {p} M {s} = {!   !}   
+    -}
