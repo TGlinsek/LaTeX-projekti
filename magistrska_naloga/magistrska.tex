@@ -23,6 +23,7 @@
 \DeclareMathOperator{\supp}{supp}
 \DeclareMathOperator{\Terms}{Terms}
 \DeclareMathOperator{\sub}{sub}
+\DeclareMathOperator{\Atoms}{\mathds{A}}
 
 \newcommand{\inference}[3][]{\infer[#1]{#3}{#2}}
 
@@ -52,7 +53,7 @@
 
 \title{Lambda izrazi v nominalnih množicah}
 \author{Tadej Glinšek}
-\date{Maj 2026}
+\date{Avgust 2026}
 
 
 
@@ -271,17 +272,17 @@ Naslednja trditev nam bo prišla prav:
     Naj bodo \(X,\ Y,\ Z,\ W\) nominalne množice, \(x,\ y,\ z,\ w\) pa njihovi elementi. Če sta \(a \in A\) in \(b \in B\) elementa nominalnih množic, potem z izrazom \((a,\ b)\) označujemo element produkta \(A \times B\). Potem veljajo naslednje implikacije:
     \begin{equation}
         \label{a1}
-        x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  y \ \vert\ (z,\ w),
+        x \ \#\  (y,\ z) \ \vert\ w \Longrightarrow x \ \#\  y \ \vert\ (z,\ w),
     \end{equation}
     \begin{equation}
         \label{a2}
-        x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  z \ \vert\ w,
+        x \ \#\  (y,\ z) \ \vert\ w \Longrightarrow x \ \#\  z \ \vert\ w,
     \end{equation}
 
     in
     \begin{equation}
         \label{a3}
-        x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\ z \ \vert\ w \Longleftrightarrow x \ \#\ (y,\ z) \ \vert\ w.
+        x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\ z \ \vert\ w \Longrightarrow x \ \#\ (y,\ z) \ \vert\ w.
     \end{equation}
 \end{trditev}
 Te trditve lahko tudi skupaj zapišemo kot
@@ -535,17 +536,33 @@ Z uporabo dejstev \(\Gamma,\ x,\ \Gamma',\ z \vdash M'\),\ \ \  \(\Gamma,\ \Gamm
     Ker so atomi v zaporedjih, ki predstavljajo kontekst za \(\lambda\)-izraze, enolični (se ne ponavljajo), nesmiselnih izrazov ne moremo skonstruirati, npr. \(\lambda x.(\lambda x.x)\). Lahko pa definiramo izraze kot so \((\lambda x.x)(\lambda x.x)\).
 \end{opomba}
 
+\subsubsection{Substitucijska relacija}
+
 Sedaj lahko definiramo še relacijo, ki posploši substitucijo:
 
 \begin{definicija}
     Naj bodo \(\Gamma,\ x,\ \Gamma' \vdash M\),\ \ \ \(\Gamma,\ \Gamma' \vdash N\) in \(\Gamma,\ \Gamma' \vdash L\) lambda izrazi.
     Definirajmo relacijo \(\sub\) med temi izrazi kot:
-    \[\sub(M, N, L) \coloneq \exists\ \Gamma,\ \Gamma' \vdash N'.\ \ \ N' \sim N \ \vert\ \Gamma,\ \Gamma',\ \ \ M \ \#\ N' \ \vert \ \Gamma,\ \Gamma',\ \ \ L = M[N'/x].\]
+    \[\sub(M, N, L) \coloneq \text{obstaja}\ N'\ \text{nad kontekstom}\ \Gamma,\ \Gamma',\ \text{tako da velja}
+    \]
+    \[N' \sim N \ \vert\ \Gamma,\ \Gamma',\ \ \ M \ \#\ N' \ \vert \ \Gamma,\ \Gamma',\ \ \ L = M[N'/x].\]
 \end{definicija}
 Če ta relacija velja, potem označimo
 \[
     \Gamma,\ \Gamma' \vdash L \approx M[N/x]
 \]
+
+Torej velja, da če za \(\Gamma, x \vdash M\) in \(\Gamma \vdash N, L\) velja \(L \approx M[N/x]\), potem obstaja \(\Gamma \vdash N'\), tako da veljajo \(N' \# \lambda x. M | \Gamma\), \(N' \sim N | \Gamma\) in \(L = M[N'/x]\).
+
+Veljajo naslednje lastnosti
+
+\begin{trditev}
+    Naj \(\Gamma, x \vdash M\), \(\Gamma \vdash N\). Potem obstaja \(\Gamma \vdash L\), da \(L \approx M[N/x]\).
+\end{trditev}
+
+\begin{trditev}
+    Naj \(\Gamma, x \vdash M\), \(\Gamma \vdash N\). Če velja \(L \approx M[N/x] \approx L'\), potem velja \(L \sim L' | \Gamma\).
+\end{trditev}
 
 \subsection{\(\alpha\)-ekvivalenca}
 
@@ -602,14 +619,80 @@ V tem podpoglavju definiramo relacijo \(\beta\)-redukcije. To je funkcijska rela
         \inference{\Gamma,\ x \vdash M \rightarrow_\beta M'}{\Gamma \vdash \lambda x.M \rightarrow_\beta \lambda x.M'}
     \]
     \[
-        \inference{\Gamma,\ x \vdash M \quad \Gamma \vdash N \quad N' \sim N \ \vert\ \Gamma \quad M \ \#\ N' \ \vert\ \Gamma}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta M[N'/x]}
+        \inference{\Gamma,\ x \vdash M \quad \Gamma \vdash N \quad \Gamma \vdash L \approx M[N/x]}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta L}
     \]
 \end{definicija}
 
-Ta zadnje pravilo lahko krajše zapišemo kot
+V zadnjem pravilu smo uporabili substitucijsko relacijo, ki nam malo poenostavi zapis pravila.
+
+\subsubsection{Sveže spremenljivke (freshness)}
+Naj bo \(\Gamma \vdash N\) izraz. Rečemo, da je \(N\) \emph{svež} glede na kontekst \(\Gamma\), če velja \(N \# A | \Gamma\), kjer \(A\) predstavlja množico vseh imen spremenljivk, ki so že v uporabi v našem kontekstu. Označimo
 \[
-    \inference{\Gamma \vdash L \approx M[N/x]}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta M[N'/x]}
+    N\ \text{svež}\ |\ \Gamma
 \]
+
+Torej, če se spremenljivka \(x\) pojavi v izrazu \(N\), potem se ali pojavi v kontekstu \(\Gamma\), ali pa se še ni pojavila v nobenem imenu do sedaj.
+
+Zdaj uvedemo naslednji kvantifikator.
+
+\begin{definicija}
+    Naj bo \(\phi\) predikat. Če za vsako svežo spremenljivko \(w\) velja \(\phi\), to označimo kot
+    \[
+        \reflectbox{\mathsf{\emph{N}}}w\ \phi
+    \]
+\end{definicija}
+
+Izkaže se, da če obstaja sveža spremenljivka, za katero velja predikat \(\phi\), potem ta predikat velja za vsako svežo spremenljivko. Ker je za nas svežih spremenljivk vedno neskončno, velja tudi obrat.
+
+
+Spomnimo se zdaj zadnjega pravila pri \(\beta\)-redukciji. Malo spremenimo njegovo formulacijo:
+
+\[
+    \inference{\Gamma,\ x \vdash M \quad \Gamma \vdash N \quad N' \sim N \ \vert\ \Gamma \quad \Gamma \vdash N'\ \#\ (\lambda x. M) \ \vert\ \Gamma \quad \Gamma \vdash L \approx M[N/x]}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta L}
+\]
+
+Zdaj lahko to zapišemo še z novimi spremenljivkami:
+
+\[
+    \inference{\Gamma,\ x \vdash M \quad \Gamma \vdash N \quad N' \sim N \ \vert\ \Gamma \quad N'\ \text{svež}\ \vert\ \Gamma \quad \Gamma \vdash L \approx M[N/x]}{\Gamma \vdash (\lambda x.M)N \rightarrow_\beta L}
+\]
+
+
+\subsubsection{Povezava z \(\alpha\)-ekvivalenco}
+
+Začnimo z naslednjo karakterizacijo \(\alpha\)-ekvivalence:
+
+\begin{lema}
+    Naj bo \(\Gamma\) kontekst, \(\Gamma \vdash M, N\) pa izraza nad tem kontekstom. Potem je res, da velja \(M \equiv_\alpha \lambda x.N\) natanko takrat, ko za katerokoli svežo spremenljivko \(w\) velja \[
+        \Gamma, w \vdash N[w/x] \equiv_\alpha N'[w/z]
+    \]
+    kjer \(M = \lambda z. N'\).
+\end{lema}
+
+\begin{opomba}
+    To, da je v zgornji lemi \(w\) svež, pomeni, da \[
+        w\ \#\ \Gamma, \lambda x. N, \lambda z. N'.
+    \]
+    V lemi bi torej lahko tudi označili
+    \[
+        \reflectbox{\mathsf{\emph{N}}}w.\ \Gamma, w \vdash N[w/x] \equiv_\alpha N'[w/z].
+    \]
+\end{opomba}
+
+Zdaj se lahko lotimo naslednje leme.
+
+\begin{lema}
+    Naj \(\Gamma, x \vdash M \rightarrow_\beta M'\). Potem \(\Gamma, w \vdash M[w/x] \rightarrow_\beta M'[w/x]\)
+\end{lema}
+
+Dokaz:
+dokaza se lotimo z indukcijo.
+Označimo še \(M_2 := \lambda x.M \equiv_\alpha \lambda z. N\).
+S pomožno lemo moramo dokazati \(M[w/x] \equiv_\alpha N[w/z]\).
+
+Dokaz je še treba dokončati.
+\qed
+
 
 Naslednja lema bo osrednjega pomena.
 
@@ -618,6 +701,364 @@ Naslednja lema bo osrednjega pomena.
     \(\Gamma \vdash M \equiv_\alpha N\).
     Potem velja, da obstaja \(N'\), da \(\Gamma \vdash M' \equiv_\alpha N' \) in \(\Gamma \vdash N \rightarrow_\beta N'\).
 \end{lema}
+
+Načeloma bi lemo lahko dokazali tudi, če za predpostavko uporabimo \(\Gamma \vdash M \sim N\) namesto \(\Gamma \vdash M \equiv_\alpha N\). Ampak za nas ta oblika leme ne bo preveč koristna.
+
+
+\newpage
+\section{Church-Rosserjev izrek}
+
+\subsection{Relacije redukcije}
+
+Spomnimo se relacije \(\beta\)-redukcije. V poglavju nam bo prav prišla njena refleksivno-tranzitivna ovojnica:
+\begin{oznaka}
+    Refleksivno-tranzitivno ovojnico relacije \(\rightarrow_\beta\) označimo z \(\rightarrow_\beta^*\). To je torej najmanjša relacija \(\rightarrow_\beta^*\), da za vsak kontekst \(\Gamma\) in izraze \(\Gamma \vdash M,\ N,\ L\) veljajo
+    \[
+        \inference{\Gamma \vdash M}{\Gamma \vdash M \rightarrow_\beta^* M}
+    \]
+    
+    \[
+        \inference{\Gamma \vdash M \rightarrow_\beta N}{\Gamma \vdash M \rightarrow_\beta^* N}
+    \]
+    
+    \[
+        \inference{\Gamma \vdash M \rightarrow_\beta^* N\, \quad\, \Gamma \vdash N \rightarrow_\beta^* L}{\Gamma \vdash M \rightarrow_\beta^* L}
+    \]
+\end{oznaka}
+
+\begin{opomba}
+    Refleksivno-tranzitivno ovojnico bi lahko definirali malo kompaktneje:
+    \[
+        \inference{\Gamma \vdash M}{\Gamma \vdash M \rightarrow_\beta^* M}
+    \]
+    \[
+        \inference{\Gamma \vdash M \rightarrow_\beta N\, \quad\, \Gamma \vdash N \rightarrow_\beta^* L}{\Gamma \vdash M \rightarrow_\beta^* L}
+    \]
+    Obe definiciji sta ekvivalentni.
+\end{opomba}
+
+Dokažimo nekaj koristnih lastnosti:
+
+\begin{trditev}
+    Naj velja \(\Gamma \vdash M \rightarrow_\beta^* M'\). Potem veljajo
+    \begin{itemize}
+        \item \(\Gamma \vdash MN \rightarrow_\beta^* M'N\)
+        \item \(\Gamma \vdash NM \rightarrow_\beta^* NM'\)
+        \item Če lahko za nek \(x \in \Atoms\) zapišemo \(\Gamma = \Gamma', x\), potem velja \(\Gamma' \vdash \lambda x. M \rightarrow_\beta^* \lambda x. M'\)
+    \end{itemize}
+\end{trditev}
+
+Tej lastnosti pravimo kongruentnost relacije \(\rightarrow_\beta^*\).
+
+\noindent
+{\em Dokaz:\/}
+
+\begin{itemize}
+    \item \(M = M'\). Potem takoj sledijo \(\Gamma \vdash \lambda x.M \rightarrow_\beta^* \lambda x.M'\), \(\Gamma \vdash MN \rightarrow_\beta^* M'N\) in \(\Gamma \vdash NM \rightarrow_\beta^* NM'\).
+    \item Naj velja \(\Gamma \vdash M \rightarrow_\beta N\). Potem dokazovane trditve sledijo neposredno iz pravil \(\beta\)-redukcije in pravila, da iz \(X \rightarrow_\beta Y\) sledi \(X \rightarrow_\beta^* Y\). 
+    \item Naj velja \(\Gamma \vdash M \rightarrow_\beta^* N\) in \(\Gamma \vdash N \rightarrow_\beta^* L\). Potem po indukcijski predpostavki veljajo \(\Gamma \vdash \lambda x.M \rightarrow_\beta^* \lambda x.N\), \(\Gamma \vdash \lambda x.N \rightarrow_\beta^* \lambda x.L\), in podobno za ostale primere. Po tranzitivnosti relacije \(\rightarrow_\beta^*\) sledi \(\Gamma \vdash \lambda x.M \rightarrow_\beta^* \lambda x.L\), podobno za ostale primere.
+\end{itemize}
+\qed
+
+
+Zdaj lahko formuliramo glavni izrek.
+\begin{izrek_crosser}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M \rightarrow_\beta^* N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
+    \[
+        \Gamma \vdash N_1 \rightarrow_\beta^* X
+    \]
+    in
+    \[
+        \Gamma \vdash N_2 \rightarrow_\beta^* X.
+    \]
+\end{izrek_crosser}
+
+
+Za pomoč pri dokazu izreka potrebujemo novo relacijo.
+
+\begin{definicija}
+    Vzporedna (paralelna) \(\beta\)-redukcija je definirana sledeče
+    \[
+    \inference{x \in \Atoms}{\Gamma \vdash x \Rightarrow x}
+    \]
+    \[
+    \inference{\Gamma \vdash M_1 \Rightarrow M_1' \quad \Gamma \vdash M_2 \Rightarrow M_2'}{\Gamma \vdash M_1 M_2 \Rightarrow M_1' M_2'}
+    \]
+
+    \[
+    \inference{\Gamma, x \vdash M \Rightarrow M'}{\Gamma \vdash \lambda x. M \Rightarrow \lambda x. M'}
+    \]
+
+    \[
+    \inference{\Gamma, x \vdash M \Rightarrow M' \quad \Gamma \vdash N \Rightarrow N' \quad L \approx M'[N'/x]}{\Gamma \vdash (\lambda x. M) N \Rightarrow L}
+    \]
+\end{definicija}
+
+\begin{opomba}
+    Iz teh pravil sledi, da za vsak \(\Gamma \vdash M\) velja \(\Gamma \vdash M \Rightarrow M\).
+\end{opomba}
+
+
+Podobno kot pri \(\beta\)-redukciji bomo uporabljali refleksivno-tranzitivno ovojnico paralelne redukcije:
+
+\begin{definicija}
+    Relacija \(\Rightarrow^*\) je definirana kot
+
+    \[
+    \inference{\Gamma \vdash M}{\Gamma \vdash M \Rightarrow^* M}
+    \]
+
+    \[
+    \inference{\Gamma \vdash M \Rightarrow N}{\Gamma \vdash M \Rightarrow^* N}
+    \]
+
+    \[
+    \inference{\Gamma \vdash M \Rightarrow^* M'\, \wedge\, \Gamma \vdash M' \Rightarrow^* M''}{\Gamma \vdash M \Rightarrow^* M''}
+    \]
+\end{definicija}
+
+\begin{opomba}
+    Pravila 
+    \[
+    \inference{\Gamma \vdash M}{\Gamma \vdash M \Rightarrow^* M}
+    \]
+    zgoraj nismo potrebovali, saj za vsak \(\Gamma \vdash M\) velja \(\Gamma \vdash M \Rightarrow M\), torej ta primer pokrije že drugo pravilo.
+\end{opomba}
+
+%%%%%-----%%%%
+
+Glavna uporaba te relacije bo v naslednji trditvi
+
+\begin{trditev}
+    Naj \(\Gamma \vdash M, M_1, M_2\) tako da \(\Gamma \vdash M \Rightarrow M_1\) in \(\Gamma \vdash M \Rightarrow M_2\), potem obstaja \(\Gamma \vdash M'\), da \(\Gamma \vdash M_1 \Rightarrow M'\) in \(\Gamma \vdash M_2 \Rightarrow M'\).
+\end{trditev}
+
+Dokaz še pride.
+
+\subsection{Pomožne leme za vzporedno redukcijo}
+
+\begin{lema}
+    Naj \(\Gamma \vdash M, N, M'\), tako da velja \(\Gamma \vdash M \rightarrow_\beta M'\) in \(M \sim N | \Gamma\). Potem obstaja \(\Gamma \vdash N'\), da \(\Gamma \vdash M' \equiv_\alpha N'\) in \(\Gamma \vdash N \rightarrow_\beta N'\).
+\end{lema}
+
+\iffalse
+\begin{lema}
+    Naj \(\Gamma \vdash M_1, M_2, M_1'\), tako da velja \(\Gamma \vdash M_1 \rightarrow_\beta M_1'\) in \(M_1 \sim M_2 | \Gamma\). Potem obstaja \(\Gamma \vdash M_2'\), da \(\Gamma \vdash M_1' \equiv_\alpha M_2'\) in \(\Gamma \vdash M_2 \rightarrow_\beta M_2'\).
+\end{lema}
+\fi
+
+\noindent
+{\em Dokaz:\/}
+
+Ločimo na primere
+
+\begin{itemize}
+    \item Naj \(M_1 = N_1N_2\), \(N_1 \rightarrow_\beta N_1'\).
+    
+    
+    \item Naj \(M_1 = (\lambda x. M) N\)
+\end{itemize}
+
+
+\qed
+
+Naslednja lema je analog podobni lemi za \(\beta\)-redukcijo:
+\begin{lema}
+    Naj \(\Gamma \vdash M \Rightarrow M'\) in naj
+    \(\Gamma \vdash M \equiv_\alpha N\).
+    Potem velja, da obstaja \(N'\), da \(\Gamma \vdash M' \equiv_\alpha N' \) in \(\Gamma \vdash N \Rightarrow N'\).
+\end{lema}
+
+Tehnična lema (velja izključno za vzporedno redukcijo).
+
+\begin{lema}
+    \(\Gamma, x \vdash M \Rightarrow M'\), \(\Gamma \vdash N \Rightarrow N'\), \(\lambda x. M \# N | \Gamma\). Potem obstaja \(\Gamma \vdash L'\), tako da \(L' \approx M'[N'/x]\) in \(\Gamma \vdash M[N/x] \Rightarrow L'\).
+\end{lema}
+
+Ključna lastnost vzporedne redukcije:
+
+\begin{izrek}
+    \(\Gamma, x \vdash M \Rightarrow M'\), \(\Gamma \vdash N \Rightarrow N'\), \(L \approx M[N/x]\). Potem obstaja \(\Gamma \vdash L'\), tako da \(L' \approx M'[N'/x]\) in \(\Gamma \vdash L \Rightarrow L'\).
+\end{izrek}
+
+\begin{opomba}
+    Ta izrek je analog podobne lastnosti za paralelno redukcijo v običajnem lambda računu, ki pa izgleda takole:
+    Naj \(M \Rightarrow_\beta M'\) in \(N \Rightarrow_\beta N'\). Potem
+    \[
+        M[N/x] \Rightarrow_\beta M'[N'/x].
+    \]
+    Ker pa so naši izrazi definirani drugače, je bilo treba to formulacijo spremeniti.
+\end{opomba}
+
+Imamo takole lemo, verjetno:
+
+\begin{lema}
+    Naj \(\Gamma, x \vdash M, M'\) in \(\Gamma \vdash N, N'\). Naj \(\Gamma, x \vdash M \Rightarrow M'\) in \(\Gamma \vdash N \Rightarrow N'\). Če \(L \approx M[N/x]\) in \(L' \approx M'[N'/x]\), potem \(L \Rightarrow L'\).
+\end{lema}
+
+To morda ni najbolje formulirano.
+
+%%%%$$$$%%%%%%
+
+\subsection{C-R izrek za vzporedno redukcijo}
+
+Da dokažemo Church-Rosserjev izrek za relacijo vzporedne redukcije potrebujemo še nekaj lem.
+
+Naslednja lema nam pove ključno lastnost vzporedne redukcije.
+
+\begin{lema}
+    Naj \(\Gamma \vdash M, N_1, N_2\) \(\lambda\)-izrazi. Naj \(\Gamma \vdash M \Rightarrow N_1\) in \(\Gamma \vdash M \Rightarrow N_2\). Potem obstaja \(\Gamma \vdash X\), tako da \(\Gamma \vdash N_1 \Rightarrow X\) in \(\Gamma \vdash N_2 \Rightarrow X\).
+\end{lema}
+
+\noindent
+{\em Dokaz:\/}
+
+\qed
+
+\begin{lema}
+    Naj \(\Gamma \vdash M, N_1, N_2\) \(\lambda\)-izrazi. Naj \(\Gamma \vdash M \Rightarrow N_1\) in \(\Gamma \vdash M \Rightarrow^* N_2\). Potem obstaja \(\Gamma \vdash X\), tako da \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow X\).
+\end{lema}
+
+\noindent
+{\em Dokaz:\/}
+
+Dokaz z indukcijo na \(\Gamma \vdash M \Rightarrow^* N_2\).
+
+\begin{itemize}
+    \item Če \(M = N_2\), potem za \(X\) vzamemo \(N_1\).
+    \item Če \(\Gamma \vdash M \Rightarrow N_2\), potem uporabimo prejšnjo lemo, da dobimo \(X\), za katerega velja \(\Gamma \vdash N_1 \Rightarrow X\) in \(\Gamma \vdash N_2 \Rightarrow X\).
+    \item Če \(\Gamma \vdash M \Rightarrow^* Y\) in \(\Gamma \vdash Y \Rightarrow^* N_2\), potem uporabimo indukcijsko predpostavko na obeh: iz prvega pogoja dobimo \(\Gamma \vdash X'\), da \(\Gamma \vdash N_1 \Rightarrow^* X'\) in \(\Gamma \vdash N_2 \Rightarrow X'\). Iz drugega pogoja in \(X'\) pa dobimo \(X\), da \(\Gamma \vdash X' \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow X\).
+\end{itemize}
+
+\qed
+
+Sledi izrek CR za vzporedno redukcijo:
+
+\begin{izrek}
+    Naj \(\Gamma \vdash M, N_1, N_2\) \(\lambda\)-izrazi. Naj \(\Gamma \vdash M \Rightarrow^* N_1\) in \(\Gamma \vdash M \Rightarrow^* N_2\). Potem obstaja \(\Gamma \vdash X\), tako da \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow^* X\).
+\end{izrek}
+
+\noindent
+{\em Dokaz:\/}
+
+Z indukcijo na \(M \Rightarrow^* N_1\)
+
+\begin{itemize}
+    \item Če \(M = N_1\), potem za \(X\) vzamemo \(N_2\).
+    \item Če \(\Gamma \vdash M \Rightarrow N_1\), potem uporabimo prejšnjo lemo, da dobimo \(X\), za katerega velja \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow X\), torej tudi \(\Gamma \vdash N_2 \Rightarrow^* X\).
+    \item Če \(\Gamma \vdash M \Rightarrow^* Y\) in \(\Gamma \vdash Y \Rightarrow^* N_1\), potem uporabimo indukcijsko predpostavko na \(\Gamma \vdash M \Rightarrow^* Y\), da dobimo \(\Gamma \vdash X'\), da \(\Gamma \vdash Y \Rightarrow^* X'\) in \(\Gamma \vdash N_2 \Rightarrow^* X'\). Zdaj pa lahko uporabimo indukcijsko predpostavko še na \(\Gamma \vdash Y \Rightarrow^* N_1\) in \(\Gamma \vdash Y \Rightarrow^* X'\), da dobimo \(X\): zanj velja \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash X' \Rightarrow^* X\), torej po tranzitivnosti s \(\Gamma \vdash N_2 \Rightarrow^* X'\) še tudi \(\Gamma \vdash N_2 \Rightarrow^* X\).
+\end{itemize}
+
+\qed
+
+%%%%%
+
+\subsection{Ekvivalentnost \(\beta\)-redukcije in vzporedne redukcije}
+
+Najprej dokažimo pomožno lastnost \(\rightarrow_\beta^*\), ki spominja na enega izmed pravil za vzporedno redukcijo:
+
+\begin{trditev}
+    Veljajta \(\Gamma \vdash M_1 \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M_2 \rightarrow_\beta^* N_2\). Potem velja
+    \[
+        \Gamma \vdash M_1 M_2 \rightarrow_\beta^* N_1 N_2
+    \]
+\end{trditev}
+
+\noindent
+{\em Dokaz:\/}
+
+Iz \(\Gamma \vdash M_1 \rightarrow_\beta^* N_1\) sledi \(\Gamma \vdash M_1 M_2 \rightarrow_\beta^* N_1 M_2\), po kongruentnosti. Podobno iz \(\Gamma \vdash M_2 \rightarrow_\beta^* N_2\) sledi \(\Gamma \vdash N_1 M_2 \rightarrow_\beta^* N_1 N_2\). Po tranzitivnosti relacije \(\rightarrow_\beta^*\) sledi \(\Gamma \vdash M_1 M_2 \rightarrow_\beta^* N_1 N_2\). \qed
+
+
+
+\begin{lema}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N\) \(\lambda\)-izraza. Če velja \(\Gamma \vdash M \rightarrow_\beta N\), potem velja \(\Gamma \vdash M \Rightarrow N\).
+\end{lema}
+\noindent
+{\em Dokaz:\/}
+
+\begin{itemize}
+    \item Naj \(M = M' Y\) in \(N = N' Y\), torej \(\Gamma \vdash M' \rightarrow_\beta N'\). Po indukcijski predpostavki sledi \(\Gamma \vdash M' \Rightarrow N'\). Iz tega in iz \(\Gamma \vdash Y \Rightarrow Y\) sledi
+    \[
+        \Gamma \vdash M' Y \Rightarrow N' Y
+    \] po pravilu za vzporedne redukcije.
+    \item Če \(M = X M'\) in \(N = X N'\), potem velja povsem simetričen sklep.
+    \item Naj \(M = \lambda x. M'\) in \(N = \lambda x. N'\), torej \(\Gamma, x \vdash M' \rightarrow_\beta N'\). Po indukcijski predpostavki sledi \(\Gamma, x \vdash M' \Rightarrow N'\), po pravilu za vzporedne redukcije pa \(\Gamma \vdash M \Rightarrow N\)
+    \item Če \(M = (\lambda x. M_1) M_2\) in \(N \approx M_1[M_2/x]\), potem po analognem pravilu za vzporedno redukcijo iz \(\Gamma \vdash M_1 \Rightarrow M_1\) in \(\Gamma \vdash M_2 \Rightarrow M_2\) sledi \(\Gamma \vdash (\lambda x. M_1) M_2 \Rightarrow N\).
+\end{itemize}
+
+\qed
+
+\begin{lema}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N\) \(\lambda\)-izraza. Če velja \(\Gamma \vdash M \Rightarrow N\), potem velja \(\Gamma \vdash M \rightarrow_\beta^* N\).
+\end{lema}
+\noindent
+{\em Dokaz:\/}
+
+Dokaz z indukcijo na \(\Gamma \vdash M \Rightarrow N\).
+
+\begin{itemize}
+    \item Če \(M = N = x \in \Atoms\), potem trditev sledi iz \(\Gamma \vdash x \rightarrow_\beta^* x\)
+    \item Če \(M = M_1 M_2\) in \(N = N_1 N_2\), potem predpostavimo \(\Gamma \vdash M_1 \Rightarrow N_1\) in \(\Gamma \vdash M_2 \Rightarrow N_2\). Po indukcijski predpostavki sledi \(\Gamma \vdash M_1 \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M_2 \rightarrow_\beta^* N_2\). Po kongruentnosti \(\rightarrow_\beta^*\) iz vsake predpostavke posebej sledi \(\Gamma \vdash M_1 M_2 \rightarrow_\beta^* N_1 M_2\) oz. \(\Gamma \vdash N_1 M_2 \rightarrow_\beta^* N_1 N_2\). Po tranzitivnosti sledi \(\Gamma \vdash M_1 M_2 \rightarrow_\beta^* N_1 N_2\).
+    \item Če \(M = \lambda x. M'\) in \(N = \lambda x. N'\), potem predpostavimo \(\Gamma \vdash M' \Rightarrow N'\). Po indukcijski predpostavki velja \(\Gamma \vdash M' \rightarrow_\beta^* N'\), po kongruentnosti pa sledi \(\Gamma \vdash \lambda x.M' \rightarrow_\beta^* \lambda x.N'\).
+    \item Naj \(M = (\lambda x. X)Y\) in \(N \approx X'[Y'/x]\), kjer \(\Gamma, x \vdash X \Rightarrow X'\) in \(\Gamma \vdash Y \Rightarrow Y'\). Po indukcijski predpostavki velja \(\Gamma, x \vdash X \rightarrow_\beta^* X'\), po kongruentnosti pa \(\Gamma \vdash \lambda x. X \rightarrow_\beta^* \lambda x. X'\). Spet po kongruentnosti velja \(\Gamma \vdash (\lambda x. X)Y \rightarrow_\beta^* (\lambda x. X')Y\). Če uporabimo še drugo indukcijsko predpostavko, \(\Gamma \vdash Y \rightarrow_\beta^* Y'\), dobimo 
+    \[\Gamma \vdash (\lambda x. X)Y \rightarrow_\beta^* (\lambda x. X') Y'\]
+    Če dodamo še pravilo \(\Gamma \vdash (\lambda x.X') Y' \rightarrow_\beta L\), kjer \(L \approx X'[Y'/x]\), dobimo \[
+        \Gamma \vdash (\lambda x. X)Y \rightarrow_\beta^* L.
+    \]
+    Ker \(L \approx N\), trditev sledi.
+\end{itemize}
+
+\qed
+
+
+\begin{trditev}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N\) \(\lambda\)-izraza. Velja \(\Gamma \vdash M \rightarrow_\beta^* N\) natanko takrat ko velja \(\Gamma \vdash M \Rightarrow^* N\).
+\end{trditev}
+\noindent
+{\em Dokaz:\/}
+
+(\(\Rightarrow\))
+
+Z indukcijo na \(\Gamma \vdash M \rightarrow_\beta^* N\):
+\begin{itemize}
+    \item Za primer, ko je \(M = N\), trditev seveda drži.
+    \item Naj velja \(\Gamma \vdash M \rightarrow_\beta N\). Potem po lemi velja \(\Gamma \vdash M \Rightarrow N\), od koder sledi \(\Gamma \vdash M \Rightarrow^* N\).
+    \item Naj velja \(\Gamma \vdash M \rightarrow_\beta^* M'\) in \(\Gamma \vdash M' \rightarrow_\beta^* M''\). Potem po indukcijski predpostavki veljata \(\Gamma \vdash M \Rightarrow^* M'\) in \(\Gamma \vdash M' \Rightarrow^* M''\), torej sledi \(\Gamma \vdash M \Rightarrow^* M''\)
+\end{itemize}
+
+(\(\Leftarrow\))
+
+Z indukcijo na \(\Gamma \vdash M \Rightarrow^* N\):
+
+
+\begin{itemize}
+    \item Za primer, ko je \(M = N\), trditev seveda drži.
+    \item Naj velja \(\Gamma \vdash M \Rightarrow N\). Potem po lemi velja \(\Gamma \vdash M \rightarrow_\beta^* N\).
+    \item Naj velja \(\Gamma \vdash M \Rightarrow^* M'\) in \(\Gamma \vdash M' \Rightarrow^* M''\). Potem po indukcijski predpostavki veljata \(\Gamma \vdash M \rightarrow_\beta^* M'\) in \(\Gamma \vdash M' \rightarrow_\beta^* M''\), torej sledi \(\Gamma \vdash M \rightarrow_\beta^* M''\)
+\end{itemize}
+
+\qed
+
+Dokaz je v obe smeri zelo podoben, ključna pa je uporaba prejšnjih dveh lem.
+
+\begin{izrek_crosser}
+    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M \rightarrow_\beta^* N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
+    \[
+        \Gamma \vdash N_1 \rightarrow_\beta^* X
+    \]
+    in
+    \[
+        \Gamma \vdash N_2 \rightarrow_\beta^* X.
+    \]
+\end{izrek_crosser}
+
+
+\noindent
+{\em Dokaz:\/}
+Po lemi veljata \(\Gamma \vdash M \Rightarrow^* N_1\) in \(\Gamma \vdash M \Rightarrow^* N_2\). Po izreku CR za paralelno redukcijo velja, da obstaja \(\Gamma \vdash X\), da velja \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow^* X\). Po lemi sledi \(\Gamma \vdash N_1 \rightarrow_\beta^* X\) in \(\Gamma \vdash N_2 \rightarrow_\beta^* X\). \qed
+
+
 
 \newpage
 
@@ -705,40 +1146,6 @@ Sedaj lahko sklepamo:
 kjer smo pri prvi in tretji ekvivalenci uporabili prvo lemo z dejstvom, da \(N \equiv_\alpha L \equiv_\alpha N'\), pri drugi ekvivalenci pa smo uporabili drugo lemo.
 
 \qed
-\newpage
-\section{Church-Rosserjev izrek}
-Preden formuliramo ciljni izrek, definirajmo naslednje:
-\begin{oznaka}
-    Refleksivno-tranzitivno ovojnico relacije \(\rightarrow_\beta\) označimo z \(\rightarrow_\beta^*\). To je torej najmanjša relacija \(\rightarrow_\beta^*\), da za vsak kontekst \(\Gamma\) in izraze \(\Gamma \vdash M,\ N,\ L\) veljajo
-    \[
-        \Gamma \vdash M \rightarrow_\beta N\, \Longrightarrow\, \Gamma \vdash M \rightarrow_\beta^* N,
-    \]
-    \[
-        \Gamma \vdash M \rightarrow_\beta^* M,
-    \]
-    \[
-        \Gamma \vdash M \rightarrow_\beta^* N\, \wedge\, \Gamma \vdash N \rightarrow_\beta^* L\, \Longrightarrow\, \Gamma \vdash M \rightarrow_\beta^* L.
-    \]
-\end{oznaka}
-
-Zdaj lahko formuliramo glavni izrek.
-\begin{izrek_crosser}
-    Naj bo \(\Gamma\) kontekst in \(\Gamma \vdash M,\ N_1,\ N_2\) \(\lambda\)-izrazi nad tem kontekstom. Naj \(\Gamma \vdash M \rightarrow_\beta^* N_1\) in \(\Gamma \vdash M \rightarrow_\beta^* N_2\). Potem obstaja \(\Gamma \vdash X\), da velja
-    \[
-        \Gamma \vdash N_1 \rightarrow_\beta^* X
-    \]
-    in
-    \[
-        \Gamma \vdash N_2 \rightarrow_\beta^* X.
-    \]
-\end{izrek_crosser}
-
-
-\noindent
-{\em Dokaz:\/}
-Dokaz zaenkrat opustimo.
-\qed
-
 
 \end{document}
 
