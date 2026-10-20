@@ -53,7 +53,7 @@
 
 \title{Lambda izrazi v nominalnih množicah}
 \author{Tadej Glinšek}
-\date{Avgust 2026}
+\date{Oktober 2026}
 
 
 
@@ -1058,6 +1058,46 @@ Dokaz je v obe smeri zelo podoben, ključna pa je uporaba prejšnjih dveh lem.
 {\em Dokaz:\/}
 Po lemi veljata \(\Gamma \vdash M \Rightarrow^* N_1\) in \(\Gamma \vdash M \Rightarrow^* N_2\). Po izreku CR za paralelno redukcijo velja, da obstaja \(\Gamma \vdash X\), da velja \(\Gamma \vdash N_1 \Rightarrow^* X\) in \(\Gamma \vdash N_2 \Rightarrow^* X\). Po lemi sledi \(\Gamma \vdash N_1 \rightarrow_\beta^* X\) in \(\Gamma \vdash N_2 \rightarrow_\beta^* X\). \qed
 
+
+\newpage
+
+\section{Nova sekcija}
+
+\subsection{metaizrek}
+
+V nadaljevanju se bomo redno sklicevali na t. i. metaizrek: 
+
+
+To je trditev, ki bo za nas veljala v splošnem (celo v splošnih nominalnih množicah).
+
+Metaizrek nam dejansko da ekvivariantnost funkcij. Na primer, Če \(M \sim M'\), potem velja \(f(M) \sim f(M')\), kjer je f funkcija.
+
+Naš metaizrek bo v bistvu takole zasnovan: imamo recursion theorem, ki nam da neko funkcijo, ki zna induktivno obdelati lambda izraze, odvisno od relacije, za katero pač želimo ta izrek.
+
+Dejansko bo f zelo splošen: lahko tudi slika v relacije. In potem f(M) pomeni M \rightarrow N, kjer N pač dobimo nekak, in potem je relacija med njima v bistvu, da za vsak N obstaja N', da M' \rightarrow N' in N \sim N'.
+
+\subsection{Karakterizacija alfa ekvivalence}
+
+Spomnimo se definicije alfa ekvivalence:
+
+\[
+x \equiv_{\alpha} x
+\]
+\[
+M \equiv_{\alpha} M' and N \equiv_{\alpha} N' -> MN \equiv_{\alpha} M'N'
+\]
+\[
+M \equiv_{\alpha} M' -> \lambda x. M \equiv_{\alpha} \lambda x. M'
+\]
+in pa
+\[
+M \sim N | \Gamma -> M \equiv_{\alpha} N
+\]
+
+Poglejmo si karakterizacijo:
+
+
+Alfa ekvivalenca je generirana z orbitno ekvivalenco in kongruentnostjo lambda izrazov. Kongruentnost pomeni, da se relacija med lambda izrazoma M in N ohranja, če uporabimo aplikacijo ali lambda abstrakcijo.
 
 
 \newpage
