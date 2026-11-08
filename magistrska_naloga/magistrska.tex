@@ -53,7 +53,7 @@
 
 \title{Lambda izrazi v nominalnih množicah}
 \author{Tadej Glinšek}
-\date{Oktober 2026}
+\date{November 2026}
 
 
 
@@ -290,6 +290,50 @@ Te trditve lahko tudi skupaj zapišemo kot
     x \ \#\  (y,\ z) \ \vert\ w \Longleftrightarrow x \ \#\  y \ \vert\ (z,\ w)\, \wedge\, x \ \#\  z \ \vert\  w.
 \]
 \newpage
+\subsection{3. poglavje Pittsa}
+
+Atomsko ime je samo spremenljivka, ki je atom. Torej, je element od množice atomov \(\mathds{A}\). V splošnem x ni atomsko ime, ampak a, ki deluje na tem iksu, pa je. Atomsko ime je torej element množice atomov.
+
+V tem poglavju bo \(X = \mathds{A}\), saj bomo gledali delovanje atomov na podmnožicah množice atomov.
+
+Recimo, da želimo neko novo sveže atomsko ime. To atomsko ime je odvisno le od atomov, ki smo jih že uporabili v dokazu do sedaj; v posebnem je teh atomov končno mnogo. Z besedo \emph{odvisno} mislimo, da je množica teh atomov, od katerih je sveže atomsko ime odvisno, support za S.
+
+S predstavlja neko lastnost imena, tj. atomi, ki izpolnjujejo predikat \(\phi\).
+
+
+Uvedli bomo nov kvantifikator
+
+\[
+    \reflectbox{\(\mathsf{\emph{N}}\)}w\ \phi
+\]
+
+To interpretiramo takole: izberemo lahko atom \(w \in \mathds{A}\), tako da se ne pojavi v kontekstu (tj. končni množici atomov, ki smo jih do sedaj uporabili v dokazu) in velja \(\phi(w)\). Kvantifikator nam pove, da taka sveža spremenljivka obstaja. \(\phi\) v svoji definiciji vsebuje kvečjemu elemente iz konteksta. Npr. če je v kontekstu atom \(x\), potem je lahko \(\phi(y) = y \# x\) (to lahko ker \(X = \mathds{A}\)). Z drugimi besedami: \(S := {a | a \in \mathds{A} \wedge \phi(a)}\) je končno podprta množica, support pa je ravno kontekst vseh dosedaj uporabljenih atomskih imen.
+
+Izkaže se, da če velja \(\reflectbox{\(\mathsf{\emph{N}}\)}w\ \phi\), torej obstoj takega svežega imena, potem za vsak \(z \in \mathds{A}\) velja, da če še ni v kontekstu, potem velja \(\phi(z)\). To dejstvo sledi iz tega, da je \(S\) končno podprt s kontekstom.
+
+\begin{izrek}
+    Naj \(\phi\) predikat in \(S := \{a | a \in \mathds{A} \wedge \phi(a)\}\). Naj \(\supp(S) = \Gamma\). Potem so naslednje trditve ekvivalentne:
+    \begin{enumerate}
+        \item obstaja \(a \in \mathds{A} - \Gamma\), da \(\phi(a)\)
+        \item za vsak \(a \in \mathds{A} - \Gamma\) velja \(\phi(a)\)
+        \item \(\mathds{A} - S\) je končna množica
+    \end{enumerate}
+\end{izrek}
+
+
+\begin{opomba}
+To lastnost označujemo kot \(\reflectbox{\(\mathsf{\emph{N}}\)}w\ \phi\).
+\end{opomba}
+
+\noindent
+{\em Dokaz:\/}
+
+...
+
+\qed
+
+
+
 \section{Netipiziran lambda račun}
 
 \iffalse
@@ -638,7 +682,7 @@ Zdaj uvedemo naslednji kvantifikator.
 \begin{definicija}
     Naj bo \(\phi\) predikat. Če za vsako svežo spremenljivko \(w\) velja \(\phi\), to označimo kot
     \[
-        \reflectbox{\mathsf{\emph{N}}}w\ \phi
+        \reflectbox{\(\mathsf{\emph{N}}\)}w\ \phi
     \]
 \end{definicija}
 
@@ -675,7 +719,7 @@ Začnimo z naslednjo karakterizacijo \(\alpha\)-ekvivalence:
     \]
     V lemi bi torej lahko tudi označili
     \[
-        \reflectbox{\mathsf{\emph{N}}}w.\ \Gamma, w \vdash N[w/x] \equiv_\alpha N'[w/z].
+        \reflectbox{\(\mathsf{\emph{N}}\)}w.\ \Gamma, w \vdash N[w/x] \equiv_\alpha N'[w/z].
     \]
 \end{opomba}
 
@@ -1074,7 +1118,9 @@ Metaizrek nam dejansko da ekvivariantnost funkcij. Na primer, Če \(M \sim M'\),
 
 Naš metaizrek bo v bistvu takole zasnovan: imamo recursion theorem, ki nam da neko funkcijo, ki zna induktivno obdelati lambda izraze, odvisno od relacije, za katero pač želimo ta izrek.
 
+\iffalse  % to je še treba malo dodelat
 Dejansko bo f zelo splošen: lahko tudi slika v relacije. In potem f(M) pomeni M \rightarrow N, kjer N pač dobimo nekak, in potem je relacija med njima v bistvu, da za vsak N obstaja N', da M' \rightarrow N' in N \sim N'.
+\fi
 
 \subsection{Karakterizacija alfa ekvivalence}
 
